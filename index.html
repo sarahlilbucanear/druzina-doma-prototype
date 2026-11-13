@@ -220,15 +220,42 @@
     .ribbon-label { flex: 0 0 auto; color: #6b6d77; font-size: 9px; font-weight: 800; text-transform: uppercase; }
     .ribbon-chip { flex: 0 0 auto; width: 31px; height: 31px; display: grid; place-items: center; border: 1px solid #d5dcff; border-radius: 8px; background: #e6eaff; font-size: 16px; }
     .pack-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
-    .pack-card { min-width: 0; min-height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 9px 5px; border: 2px solid #e6e8f5; border-radius: 15px; background: #fafaff; cursor: pointer; transition: transform .16s, border-color .16s, box-shadow .16s; }
-    .pack-card:hover:not(:disabled) { transform: translateY(-3px); border-color: var(--blue); box-shadow: 0 7px 17px #6479f51f; }
+    .pack-card { position: relative; min-width: 0; min-height: 174px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 17px 5px 14px; overflow: hidden; border: 0; border-radius: 10px; color: white; background: linear-gradient(155deg,#8073c9,#6758a5 49%,#4f528e); box-shadow: none; clip-path: polygon(0 3%,5% 1%,10% 3%,15% 1%,20% 3%,25% 1%,30% 3%,35% 1%,40% 3%,45% 1%,50% 3%,55% 1%,60% 3%,65% 1%,70% 3%,75% 1%,80% 3%,85% 1%,90% 3%,95% 1%,100% 3%,100% 97%,95% 99%,90% 97%,85% 99%,80% 97%,75% 99%,70% 97%,65% 99%,60% 97%,55% 99%,50% 97%,45% 99%,40% 97%,35% 99%,30% 97%,25% 99%,20% 97%,15% 99%,10% 97%,5% 99%,0 97%); cursor: pointer; isolation: isolate; filter: drop-shadow(0 5px 7px #30345238); transition: transform .18s,filter .2s; }
+    .pack-card:before { position: absolute; z-index: 0; inset: 5px 4px; border: 1px solid #ffffff67; border-radius: 7px; background: repeating-linear-gradient(90deg,#ffffff35 0 1px,transparent 1px 5px) top/100% 5px no-repeat,repeating-linear-gradient(90deg,#ffffff35 0 1px,transparent 1px 5px) bottom/100% 5px no-repeat,linear-gradient(90deg,#ffffff22,transparent 13%,#ffffff12 48%,#18173730),radial-gradient(ellipse at 50% 47%,#ffffff42,transparent 58%); content: ""; pointer-events: none; }
+    .pack-card:after { position: absolute; z-index: 2; inset: -70% -30%; background: linear-gradient(115deg,transparent 42%,#ffffffa8 50%,transparent 58%); content: ""; opacity: 0; pointer-events: none; transform: translateX(-58%) rotate(18deg); transition: opacity .16s,transform .52s ease; }
+    .pack-card:hover:not(:disabled) { z-index: 1; transform: translateY(-4px) scale(1.035); filter: drop-shadow(0 9px 10px #30345255) brightness(1.08); }
+    .pack-card:hover:not(:disabled):after { opacity: .8; transform: translateX(58%) rotate(18deg); }
+    .pack-card:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    .pack-card[data-pack="easy"] { background: linear-gradient(155deg,#8073c9,#6758a5 49%,#4f528e); }
+    .pack-card[data-pack="medium"] { background: linear-gradient(155deg,#508b69,#327050 49%,#204c4c); }
+    .pack-card[data-pack="hard"] { background: linear-gradient(155deg,#c37646,#a55042 49%,#703e51); }
     .pack-card:disabled { opacity: .43; cursor: default; }
-    .pack-card strong { font-size: 13px; }
-    .pack-card > span:not(.pack-mark) { color: #6d6f79; font-size: 9px; text-align: center; }
-    .pack-mark { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; color: white; background: var(--blue); font-size: 12px; }
-    .pack-card[data-pack="medium"] .pack-mark { background: #758af5; }
-    .pack-card[data-pack="hard"] .pack-mark { background: #9c78e8; }
-    .pack-card small { color: var(--blue-dark); font-size: 9px; font-weight: 750; }
+    .pack-card strong { position: relative; z-index: 1; color: #fff; font-size: 13px; text-shadow: 0 1px 4px #20244699; }
+    .pack-card > span:not(.pack-mark) { position: relative; z-index: 1; color: #ffffffe8; font-size: 9px; text-align: center; text-shadow: 0 1px 3px #20244699; }
+    .pack-mark { position: relative; z-index: 1; width: 50px; height: 48px; display: grid; place-items: center; border: 1px solid #ffffff8a; border-radius: 50%; color: white; background: radial-gradient(ellipse at 35% 25%,#ffffff82,#ffffff1a 72%); font-size: 25px; filter: drop-shadow(0 3px 4px #20244660); }
+    .pack-card small { position: relative; z-index: 1; color: #fff; font-size: 9px; font-weight: 800; text-shadow: 0 1px 4px #20244699; }
+    .wrapper-step { text-align: center; }
+    .pack-wrapper { --tilt-x: 0deg; --tilt-y: 0deg; --drag-x: 0px; --drag-y: 0px; --glare-x: 50%; --glare-y: 50%; --glare-opacity: 0; --tear-progress: 0; position: relative; width: min(100%,208px); height: 278px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; margin: 14px auto 10px; padding: 15px 13px; overflow: hidden; border: 3px solid #b9c3ff; border-radius: 13px; color: white; background: linear-gradient(155deg,#7564ba,#5962ac 49%,#3f538f); box-shadow: inset 0 0 0 2px #ffffff42,0 14px 30px #333a7352; clip-path: polygon(0 3%,5% 1%,10% 3%,15% 1%,20% 3%,25% 1%,30% 3%,35% 1%,40% 3%,45% 1%,50% 3%,55% 1%,60% 3%,65% 1%,70% 3%,75% 1%,80% 3%,85% 1%,90% 3%,95% 1%,100% 3%,100% 97%,95% 99%,90% 97%,85% 99%,80% 97%,75% 99%,70% 97%,65% 99%,60% 97%,55% 99%,50% 97%,45% 99%,40% 97%,35% 99%,30% 97%,25% 99%,20% 97%,15% 99%,10% 97%,5% 99%,0 97%); cursor: grab; transform: perspective(1000px) translate3d(var(--drag-x),var(--drag-y),0) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style: preserve-3d; transition: transform .34s cubic-bezier(.2,.8,.2,1),filter .2s,box-shadow .2s; touch-action: none; user-select: none; -webkit-user-select: none; will-change: transform; }
+    .pack-wrapper:before { position: absolute; z-index: 0; inset: 7px; border: 1px solid #ffffff72; border-radius: 8px; background: repeating-linear-gradient(90deg,#ffffff35 0 1px,transparent 1px 5px) top/100% 5px no-repeat,repeating-linear-gradient(90deg,#ffffff35 0 1px,transparent 1px 5px) bottom/100% 5px no-repeat,radial-gradient(ellipse at 50% 48%,#ffffff45,transparent 62%),linear-gradient(135deg,#ffffff12,transparent 42%,#161e586b); content: ""; pointer-events: none; }
+    .pack-wrapper:after { position: absolute; z-index: 3; inset: -40%; background: linear-gradient(115deg,transparent 38%,#ffffff00 45%,#ffffffa8 50%,#b5ffe067 55%,transparent 63%); background-position: var(--glare-x) var(--glare-y); background-size: 190% 190%; content: ""; opacity: var(--glare-opacity); mix-blend-mode: screen; pointer-events: none; }
+    .pack-wrapper[data-pack="easy"] { border-color: #d3c8ff; background: linear-gradient(155deg,#8073c9,#6758a5 49%,#4f528e); }
+    .pack-wrapper[data-pack="medium"] { border-color: #b8efcf; background: linear-gradient(155deg,#508b69,#327050 49%,#204c4c); }
+    .pack-wrapper[data-pack="hard"] { border-color: #ffd2a5; background: linear-gradient(155deg,#c37646,#a55042 49%,#703e51); }
+    .pack-wrapper > span, .pack-wrapper > strong { position: relative; z-index: 1; pointer-events: none; }
+    .pack-wrapper-brand { width: 100%; padding-bottom: 7px; border-bottom: 1px solid #ffffff76; font-size: 9px; font-weight: 900; letter-spacing: 1.7px; }
+    .pack-wrapper-category { padding: 3px 9px; border: 1px solid #ffffffa6; border-radius: 99px; background: #ffffff20; font-size: 9px; font-weight: 900; letter-spacing: 1.4px; }
+    .pack-wrapper-art { display: grid; place-items: center; width: 122px; height: 105px; border: 1px solid #ffffff8a; border-radius: 48% 52% 43% 57%; background: radial-gradient(ellipse,#ffffff92,#ffffff20 68%,transparent 70%); font-size: 57px; filter: drop-shadow(0 6px 4px #17233c66); }
+    .pack-wrapper-title { font-size: 16px; font-weight: 900; text-shadow: 0 2px 6px #11142e8c; }
+    .pack-wrapper-time, .pack-wrapper-count { font-size: 10px; font-weight: 700; text-shadow: 0 1px 4px #11142e8c; }
+    .pack-wrapper-seal { width: calc(100% + 20px); height: 8px; border-top: 1px dashed #ffffffab; border-bottom: 1px dashed #ffffffab; background: #ffffff22; }
+    .pack-wrapper-tearline { position: absolute; z-index: 2; top: 54%; right: 0; left: 0; height: 2px; background: linear-gradient(90deg,transparent,#ffffff9c 15%,#fff 50%,#ffffff9c 85%,transparent); opacity: .55; transform: scaleX(var(--tear-progress)); transform-origin: left center; pointer-events: none; }
+    .pack-wrapper.is-dragging { cursor: grabbing; transition: none; }
+    .pack-wrapper.is-ready { box-shadow: inset 0 0 0 2px #ffffff8c,0 0 0 2px white,0 0 28px #d8ffdfbb; filter: brightness(1.13); }
+    .pack-wrapper.is-opening { animation: pack-split .46s cubic-bezier(.15,.82,.24,1) both; pointer-events: none; }
+    @keyframes pack-split { 0% { clip-path: inset(0 round 13px); transform: perspective(1000px) rotateX(0) rotateY(0) scale(1); } 42% { clip-path: polygon(0 0,100% 0,100% 48%,64% 51%,100% 56%,100% 100%,0 100%,0 56%,34% 51%,0 48%); transform: perspective(1000px) rotateX(8deg) rotateY(8deg) scale(1.04); filter: brightness(1.42); } 100% { clip-path: polygon(0 0,100% 0,100% 48%,64% 51%,100% 56%,100% 100%,0 100%,0 56%,34% 51%,0 48%); transform: perspective(1000px) rotateX(16deg) rotateY(18deg) translateY(-24px) scale(.76); opacity: 0; filter: brightness(1.7); } }
+    .wrapper-prompt { margin: 10px 0 5px; color: #60636f; font-size: 11px; font-weight: 750; }
+    .wrapper-open-button { min-height: 40px; margin-top: 4px; padding: 9px 19px; border: 0; border-radius: 99px; color: white; background: var(--blue-dark); font-size: 11px; font-weight: 850; cursor: pointer; transition: transform .16s,box-shadow .16s; }
+    .wrapper-open-button:hover { box-shadow: 0 5px 14px #5268d326; transform: translateY(-2px); }
     .deck-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .deck-heading h3 { margin: 0; font-size: 15px; }
     .deck-heading p { margin: 2px 0 0; color: #777984; font-size: 10px; }
@@ -374,7 +401,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .mystery-card, .revealed-card { transition-duration: .01ms !important; }
-      .card-grid.dealing .mystery-card, .card-grid.shuffling .mystery-card, #reveal-step.is-revealing .revealed-card, #reveal-step.rare-reveal.is-revealing .rare-particles { animation-duration: .01ms !important; animation-delay: 0ms !important; }
+      .card-grid.dealing .mystery-card, .card-grid.shuffling .mystery-card, .pack-wrapper.is-opening, #reveal-step.is-revealing .revealed-card, #reveal-step.rare-reveal.is-revealing .rare-particles { animation-duration: .01ms !important; animation-delay: 0ms !important; }
     }
   </style>
 </head>
@@ -596,15 +623,31 @@
         <p class="modal-copy">Nejdřív si vyber časovou obtížnost. Každý balíček obsahuje úkoly, které čekají na los.</p>
         <div class="pack-grid">
           <button class="pack-card" data-pack="easy">
-            <span class="pack-mark">✦</span><strong>Easy</strong><span>do 10 minut</span><small data-pack-count="easy"></small>
+            <span class="pack-mark">🧹</span><strong>Easy</strong><span>do 10 minut</span><small data-pack-count="easy"></small>
           </button>
           <button class="pack-card" data-pack="medium">
-            <span class="pack-mark">✦✦</span><strong>Medium</strong><span>11–30 minut</span><small data-pack-count="medium"></small>
+            <span class="pack-mark">🫧</span><strong>Medium</strong><span>11–30 minut</span><small data-pack-count="medium"></small>
           </button>
           <button class="pack-card" data-pack="hard">
-            <span class="pack-mark">✦✦✦</span><strong>Hard</strong><span>více než 30 minut</span><small data-pack-count="hard"></small>
+            <span class="pack-mark">🪟</span><strong>Hard</strong><span>více než 30 minut</span><small data-pack-count="hard"></small>
           </button>
         </div>
+      </div>
+      <div id="wrapper-step" class="wrapper-step" hidden>
+        <div class="drawn-ribbon" id="wrapper-ribbon"></div>
+        <div class="deck-heading"><button class="back-button" id="wrapper-back" aria-label="Zpět k balíčkům">‹</button><div><h3 id="wrapper-heading"></h3><p id="wrapper-description"></p></div></div>
+        <button class="pack-wrapper" id="pack-wrapper" type="button" aria-label="Rozříznout obal tažením nebo kliknutím">
+          <span class="pack-wrapper-brand">DOMÁCÍ VÝPRAVA</span>
+          <span class="pack-wrapper-seal" aria-hidden="true"></span>
+          <span class="pack-wrapper-category" id="wrapper-difficulty"></span>
+          <span class="pack-wrapper-art" id="wrapper-art" aria-hidden="true"></span>
+          <strong class="pack-wrapper-title" id="wrapper-title"></strong>
+          <span class="pack-wrapper-time" id="wrapper-time"></span>
+          <span class="pack-wrapper-count" id="wrapper-count"></span>
+          <span class="pack-wrapper-tearline" aria-hidden="true"></span>
+        </button>
+        <p class="wrapper-prompt" id="wrapper-prompt">Přejeď prstem přes obal.</p>
+        <button class="wrapper-open-button" id="wrapper-open-button" type="button">Rozříznout obal</button>
       </div>
       <div id="deck-step" hidden>
         <div class="drawn-ribbon" id="deck-ribbon"></div>
@@ -700,6 +743,11 @@
     let cardSwipeTimer;
     let revealAnimationTimer;
     let suppressCardClick = false;
+    let packGesture = null;
+    let packTearTimer;
+    let packOpenTimer;
+    let packOpening = false;
+    let suppressWrapperClick = false;
     let weekOffset = 0;
     let sessionDrawn = [];
     let drawFinishTimer;
@@ -1296,6 +1344,7 @@
     }
     function setModalStep(step) {
       $("#pack-step").hidden = step !== "packs";
+      $("#wrapper-step").hidden = step !== "wrapper";
       $("#deck-step").hidden = step !== "deck";
       $("#reveal-step").hidden = step !== "reveal";
     }
@@ -1320,11 +1369,143 @@
     }
     function showPacks() {
       clearTimeout(cardSwipeTimer);
+      clearTimeout(packTearTimer);
+      clearTimeout(packOpenTimer);
       cancelCardGesture();
+      cancelPackGesture();
+      packOpening = false;
+      suppressWrapperClick = false;
+      const wrapper = $("#pack-wrapper");
+      wrapper.classList.remove("is-opening", "is-dragging", "is-ready", "is-tearing");
+      resetCardMotion(wrapper);
+      wrapper.style.setProperty("--tear-progress", "0");
       $("#card-grid").classList.remove("is-committing", "final-pull");
       suppressCardClick = false;
       selectedDifficulty = "";
       renderPacks();
+    }
+    function selectPack(difficulty) {
+      const count = dueChores().filter((chore) => chore.difficulty === difficulty).length;
+      if (!count) { renderPacks(); return; }
+      const details = {
+        easy: { label: "EASY", icon: "🧹", title: "Rychlá výprava", time: "do 10 minut" },
+        medium: { label: "MEDIUM", icon: "🫧", title: "Výprava družiny", time: "11–30 minut" },
+        hard: { label: "HARD", icon: "🪟", title: "Velká výprava", time: "více než 30 minut" }
+      }[difficulty];
+      if (!details) return;
+      selectedDifficulty = difficulty;
+      const wrapper = $("#pack-wrapper");
+      wrapper.dataset.pack = difficulty;
+      wrapper.setAttribute("aria-label", `Rozříznout balíček ${details.label} tažením nebo kliknutím`);
+      $("#wrapper-heading").textContent = `${details.label} · vybraný balíček`;
+      $("#wrapper-description").textContent = `Uvnitř čeká ${count} ${taskNoun(count)}.`;
+      $("#wrapper-difficulty").textContent = details.label;
+      $("#wrapper-art").textContent = details.icon;
+      $("#wrapper-title").textContent = details.title;
+      $("#wrapper-time").textContent = details.time;
+      $("#wrapper-count").textContent = `${count} ${taskNoun(count)} uvnitř`;
+      $("#wrapper-prompt").textContent = "Přejeď prstem nebo myší napříč obalem. Karty se vysypou ven.";
+      renderRibbon("#wrapper-ribbon");
+      wrapper.classList.remove("is-opening", "is-dragging", "is-ready", "is-tearing");
+      resetCardMotion(wrapper);
+      wrapper.style.setProperty("--tear-progress", "0");
+      setModalStep("wrapper");
+    }
+    function cancelPackGesture() {
+      if (!packGesture) return;
+      const wrapper = packGesture.wrapper;
+      wrapper.classList.remove("is-dragging", "is-ready", "is-tearing");
+      resetCardMotion(wrapper);
+      wrapper.style.setProperty("--tear-progress", "0");
+      packGesture = null;
+    }
+    function openPackWrapper() {
+      if (!selectedDifficulty || packOpening) return;
+      packOpening = true;
+      cancelPackGesture();
+      const wrapper = $("#pack-wrapper");
+      wrapper.classList.remove("is-dragging", "is-ready", "is-tearing");
+      wrapper.classList.add("is-opening");
+      wrapper.style.setProperty("--tear-progress", "1");
+      $("#wrapper-prompt").textContent = "Obal se trhá… karty se vysypávají!";
+      vibrateFeedback([12, 22, 18]);
+      clearTimeout(packOpenTimer);
+      const openingTime = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 460;
+      packOpenTimer = setTimeout(() => {
+        wrapper.classList.remove("is-opening");
+        resetCardMotion(wrapper);
+        wrapper.style.setProperty("--tear-progress", "0");
+        packOpening = false;
+        showDeck(selectedDifficulty);
+      }, openingTime);
+    }
+    function bindPackTear(wrapper) {
+      wrapper.addEventListener("pointerdown", (event) => {
+        if (event.button !== undefined && event.button !== 0 || packOpening || packGesture) return;
+        const bounds = wrapper.getBoundingClientRect();
+        packGesture = {
+          wrapper,
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          bounds,
+          threshold: Math.max(76, bounds.width * .42),
+          thresholdHit: false
+        };
+        if (event.isTrusted && wrapper.setPointerCapture) wrapper.setPointerCapture(event.pointerId);
+        wrapper.classList.add("is-dragging");
+        vibrateFeedback(8);
+      });
+      wrapper.addEventListener("pointermove", (event) => {
+        const gesture = packGesture && packGesture.wrapper === wrapper && packGesture.pointerId === event.pointerId ? packGesture : null;
+        const bounds = gesture ? gesture.bounds : wrapper.getBoundingClientRect();
+        setCardTilt(wrapper, event.clientX, event.clientY, bounds);
+        if (!gesture) return;
+        const deltaX = event.clientX - gesture.startX;
+        const deltaY = event.clientY - gesture.startY;
+        const progress = Math.min(1, Math.abs(deltaX) / gesture.threshold);
+        wrapper.style.setProperty("--drag-x", `${Math.sign(deltaX) * Math.min(Math.abs(deltaX) * .32, 54)}px`);
+        wrapper.style.setProperty("--drag-y", `${Math.sign(deltaY) * Math.min(Math.abs(deltaY) * .18, 22)}px`);
+        wrapper.style.setProperty("--tear-progress", progress.toFixed(2));
+        const thresholdHit = Math.abs(deltaX) >= gesture.threshold;
+        wrapper.classList.toggle("is-ready", thresholdHit);
+        if (thresholdHit && !gesture.thresholdHit) vibrateFeedback([12, 18]);
+        gesture.thresholdHit = thresholdHit;
+      });
+      wrapper.addEventListener("pointerup", (event) => {
+        const gesture = packGesture && packGesture.wrapper === wrapper && packGesture.pointerId === event.pointerId ? packGesture : null;
+        if (!gesture) return;
+        const deltaX = event.clientX - gesture.startX;
+        const shouldTear = Math.abs(deltaX) >= gesture.threshold;
+        packGesture = null;
+        wrapper.classList.remove("is-dragging");
+        if (event.isTrusted && wrapper.hasPointerCapture && wrapper.hasPointerCapture(event.pointerId)) wrapper.releasePointerCapture(event.pointerId);
+        if (shouldTear) {
+          wrapper.classList.add("is-ready", "is-tearing");
+          wrapper.style.setProperty("--tear-progress", "1");
+          suppressWrapperClick = true;
+          vibrateFeedback(26);
+          clearTimeout(packTearTimer);
+          packTearTimer = setTimeout(() => {
+            packTearTimer = undefined;
+            suppressWrapperClick = false;
+            openPackWrapper();
+          }, 140);
+        } else {
+          wrapper.classList.remove("is-ready", "is-tearing");
+          resetCardMotion(wrapper);
+          wrapper.style.setProperty("--tear-progress", "0");
+        }
+      });
+      wrapper.addEventListener("pointercancel", () => cancelPackGesture());
+      wrapper.addEventListener("click", (event) => {
+        if (suppressWrapperClick) {
+          event.preventDefault();
+          suppressWrapperClick = false;
+          return;
+        }
+        openPackWrapper();
+      });
     }
     function showDeck(difficulty) {
       const count = dueChores().filter((chore) => chore.difficulty === difficulty).length;
@@ -1453,7 +1634,15 @@
       if (!dueChores().length) { notify("Všechny aktuální úkoly už jsou rozdělené nebo splněné."); return; }
       clearTimeout(drawFinishTimer);
       clearTimeout(cardSwipeTimer);
+      clearTimeout(packTearTimer);
+      clearTimeout(packOpenTimer);
       cancelCardGesture();
+      cancelPackGesture();
+      packOpening = false;
+      suppressWrapperClick = false;
+      $("#pack-wrapper").classList.remove("is-opening", "is-dragging", "is-ready", "is-tearing");
+      resetCardMotion($("#pack-wrapper"));
+      $("#pack-wrapper").style.setProperty("--tear-progress", "0");
       $("#card-grid").classList.remove("is-committing", "final-pull");
       suppressCardClick = false;
       sessionDrawn = [];
@@ -1505,7 +1694,15 @@
     function finalizeDraw() {
       clearTimeout(drawFinishTimer);
       clearTimeout(cardSwipeTimer);
+      clearTimeout(packTearTimer);
+      clearTimeout(packOpenTimer);
       cancelCardGesture();
+      cancelPackGesture();
+      packOpening = false;
+      suppressWrapperClick = false;
+      $("#pack-wrapper").classList.remove("is-opening", "is-dragging", "is-ready", "is-tearing");
+      resetCardMotion($("#pack-wrapper"));
+      $("#pack-wrapper").style.setProperty("--tear-progress", "0");
       $("#card-grid").classList.remove("is-committing", "final-pull");
       suppressCardClick = false;
       const count = sessionDrawn.length;
@@ -1779,7 +1976,10 @@
     $("#week-prev").disabled = true;
     $("#week-next").addEventListener("click", () => { weekOffset += 1; renderTasks(); });
     document.querySelectorAll("[data-back]").forEach((button) => button.addEventListener("click", () => openScreen(button.dataset.back)));
-    document.querySelectorAll(".pack-card").forEach((button) => button.addEventListener("click", () => showDeck(button.dataset.pack)));
+    document.querySelectorAll(".pack-card").forEach((button) => button.addEventListener("click", () => selectPack(button.dataset.pack)));
+    bindPackTear($("#pack-wrapper"));
+    $("#wrapper-back").addEventListener("click", showPacks);
+    $("#wrapper-open-button").addEventListener("click", openPackWrapper);
     $("#deck-back").addEventListener("click", showPacks);
     document.querySelectorAll(".mystery-card, .revealed-card").forEach(bindCardPhysics);
     $("#card-grid").addEventListener("click", (event) => {
@@ -1800,7 +2000,7 @@
       setTimeout(() => grid.classList.remove("shuffling"), 700);
       notify("Karty jsou zamíchané. Vyber jednu!");
     });
-    $("#draw-again-button").addEventListener("click", () => showDeck(selectedDifficulty));
+    $("#draw-again-button").addEventListener("click", () => selectPack(selectedDifficulty));
     $("#choose-pack-button").addEventListener("click", showPacks);
     $("#close-draw").addEventListener("click", finalizeDraw);
     $("#draw-modal").addEventListener("click", (event) => {
