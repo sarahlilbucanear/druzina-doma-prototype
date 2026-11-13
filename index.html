@@ -93,10 +93,26 @@
     .task-check:checked:after { display: block; color: white; content: "✓"; font-size: 18px; font-weight: 800; line-height: 23px; text-align: center; }
     .task-check:disabled { cursor: default; opacity: .8; }
     .empty-note { margin: 8px 6px; color: #73747c; font-size: 11px; }
+    .draw-needed { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; padding: 11px 14px; border: 0; border-radius: 15px; color: #303b76; background: #e9edff; text-align: left; cursor: pointer; transition: background .18s, transform .18s; }
+    .draw-needed:hover { background: #dfe5ff; transform: translateY(-1px); }
+    .draw-needed-copy { display: grid; gap: 3px; }
+    .draw-needed-label { color: #686e91; font-size: 10px; font-weight: 700; }
+    .draw-needed-counts { font-size: 12px; font-weight: 850; }
+    .draw-needed-arrow { flex: 0 0 auto; font-size: 22px; font-weight: 700; }
     .supply-card { margin-top: 15px; overflow: hidden; border-radius: 21px; background: #ededee; }
     .supply-head { padding: 10px 12px; border-radius: 19px 19px 0 0; background: #b8b8ba; font-size: 14px; font-weight: 800; text-align: center; }
     .supply-row { display: grid; grid-template-columns: minmax(0,1fr) 32px; align-items: center; gap: 8px; margin: 8px 9px 10px; padding: 7px 8px 7px 13px; border-radius: 10px; background: #dedee0; font-size: 12px; font-weight: 750; }
     .supply-owner { margin-left: 8px; color: #45464d; font-weight: 450; }
+    .supply-add-wrap { display: flex; justify-content: center; padding: 0 10px 10px; }
+    .supply-add { width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; color: #3e4da0; background: white; font-size: 23px; line-height: 1; cursor: pointer; transition: background .18s, transform .18s; }
+    .supply-add:hover { background: #e9edff; transform: scale(1.06); }
+    .supply-form { display: grid; gap: 8px; margin: 0 10px 11px; padding: 10px; border-radius: 13px; background: #fff; }
+    .supply-input, .supply-owner-select { width: 100%; min-height: 39px; padding: 8px 10px; border: 1px solid #dfe0e5; border-radius: 9px; color: var(--ink); background: white; font: inherit; font-size: 12px; }
+    .supply-form-actions { display: flex; justify-content: flex-end; gap: 7px; }
+    .supply-form-actions button { min-height: 34px; padding: 7px 12px; border: 0; border-radius: 99px; font-size: 11px; font-weight: 750; cursor: pointer; }
+    .supply-cancel { background: #ededee; }
+    .supply-save { color: white; background: var(--blue-dark); }
+    .supply-form-actions button:hover { filter: brightness(.97); transform: translateY(-1px); }
     .quest-zone { position: relative; min-height: 108px; margin: 17px -18px 0; padding: 14px 18px 0; background: #fff; }
     .quick-cards { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
     .quick-card { min-height: 72px; padding: 9px 13px; border-radius: 19px; background: #dedee0; }
@@ -244,63 +260,89 @@
     .last-card-note { margin: 11px 0 0; color: #636ee0; font-size: 11px; font-weight: 700; text-align: center; }
     .toast { position: fixed; z-index: 9; right: 15px; bottom: 16px; left: 15px; width: fit-content; max-width: 390px; margin: auto; padding: 12px 15px; border-radius: 12px; color: #fff; background: #272a36; box-shadow: 0 8px 26px #0003; font-size: 12px; }
     .toast[hidden] { display: none; }
-    .onboarding-backdrop { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 18px; background: #191b2aa8; backdrop-filter: blur(5px); }
-    .onboarding-card { position: relative; width: min(100%, 390px); max-height: 92vh; overflow: auto; padding: 25px 22px 19px; border: 1px solid #eef0fb; border-radius: 25px; background: white; box-shadow: 0 24px 80px #11152566; animation: modal-in .22s ease-out; }
-    .onboarding-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .onboarding-screen { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 30px 20px; background: #fff; }
+    body.onboarding-active { overflow: hidden; }
+    body.onboarding-active .app { display: none; }
+    .onboarding-card { position: relative; width: min(100%, 540px); padding: 12px 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+    .onboarding-top { display: flex; align-items: center; justify-content: center; gap: 12px; text-align: center; }
     .onboarding-eyebrow { color: var(--blue-dark); font-size: 9px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
-    .onboarding-close { width: 34px; height: 34px; border: 0; border-radius: 50%; color: #555762; background: #ededee; font-size: 23px; line-height: 1; cursor: pointer; }
     .onboarding-progress { display: flex; gap: 5px; margin: 18px 0 22px; }
     .onboarding-progress span { height: 4px; flex: 1; border-radius: 99px; background: #e8e9ef; }
     .onboarding-progress span.active { background: var(--blue-dark); }
     .onboarding-icon { width: 68px; height: 68px; display: grid; place-items: center; margin: 0 auto 15px; border-radius: 22px; background: #eef0ff; font-size: 36px; }
     .onboarding-title { margin: 0; font-size: 23px; font-weight: 850; letter-spacing: -.5px; line-height: 1.15; text-align: center; }
-    .onboarding-copy { min-height: 72px; margin: 12px 0 22px; color: #666874; font-size: 13px; line-height: 1.6; text-align: center; }
-    .onboarding-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .onboarding-actions { display: flex; align-items: center; gap: 8px; }
-    .onboarding-skip, .onboarding-prev { min-height: 42px; padding: 8px 12px; border: 0; border-radius: 12px; color: #666874; background: transparent; font-size: 12px; font-weight: 700; cursor: pointer; }
-    .onboarding-prev { background: #f0f0f3; }
-    .onboarding-next { min-height: 44px; min-width: 132px; padding: 10px 17px; border: 0; border-radius: 13px; color: white; background: var(--blue-dark); font-size: 12px; font-weight: 800; cursor: pointer; }
-    .onboarding-next:hover { background: #4c64eb; }
-    .onboarding-prev[hidden], .onboarding-skip[hidden] { display: none; }
-    .setup-modal { width: min(100%, 470px); padding: 22px; }
-    .setup-modal .onboarding-progress { margin: 14px 0 18px; }
-    .setup-modal .onboarding-icon { width: 54px; height: 54px; margin-bottom: 11px; border-radius: 17px; font-size: 29px; }
-    .setup-modal .onboarding-title { font-size: 21px; }
-    .setup-modal .onboarding-copy { min-height: 0; margin: 8px 0 15px; font-size: 12px; }
-    .setup-mode-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin: 14px 0; }
-    .setup-mode-card { min-height: 86px; padding: 11px; border: 2px solid #e8e9f2; border-radius: 15px; background: #fafaff; text-align: left; cursor: pointer; }
+    .onboarding-copy { min-height: 0; margin: 10px 0 23px; color: #666874; font-size: 13px; line-height: 1.5; text-align: center; }
+    .onboarding-footer { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 24px; }
+    .onboarding-actions { display: flex; align-items: center; }
+    .onboarding-prev, .onboarding-next { min-height: 46px; padding: 10px 24px; border: 0; border-radius: 99px; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .onboarding-prev { color: #555762; background: #ededee; }
+    .onboarding-next { min-width: 160px; color: white; background: var(--blue-dark); }
+    .onboarding-next:hover:not(:disabled) { background: #4c64eb; }
+    .onboarding-prev[hidden] { display: none; }
+    .setup-modal { width: min(100%, 540px); }
+    .setup-modal .onboarding-progress { margin: 14px 0 28px; }
+    .setup-modal .onboarding-icon { width: 58px; height: 58px; margin-bottom: 14px; border-radius: 19px; font-size: 31px; }
+    .setup-modal .onboarding-title { font-size: 25px; }
+    .setup-modal .onboarding-copy { margin: 10px 0 22px; font-size: 13px; }
+    .setup-mode-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin: 22px 0; }
+    .setup-mode-card { min-height: 74px; padding: 12px; border: 2px solid #e8e9f2; border-radius: 19px; background: #fafaff; text-align: center; cursor: pointer; }
     .setup-mode-card.active { border-color: var(--blue-dark); background: #f0f2ff; box-shadow: 0 0 0 2px #8496ff26; }
     .setup-mode-card strong { display: block; margin: 4px 0; font-size: 12px; }
-    .setup-mode-card span { color: #70717b; font-size: 10px; line-height: 1.4; }
-    .setup-fields { display: grid; gap: 9px; margin: 13px 0 3px; }
-    .setup-field { display: grid; gap: 5px; color: #555762; font-size: 10px; font-weight: 750; }
-    .setup-field input, .setup-field select, .setup-field textarea { width: 100%; min-height: 39px; padding: 9px 10px; border: 1px solid #dfe0e7; border-radius: 10px; color: #252630; background: white; font: inherit; font-size: 12px; }
+    .setup-field { display: grid; gap: 6px; color: #555762; font-size: 11px; font-weight: 750; text-align: center; }
+    .setup-field input, .setup-field select, .setup-field textarea { width: 100%; min-height: 43px; padding: 10px 12px; border: 1px solid #dfe0e7; border-radius: 99px; color: #252630; background: white; font: inherit; font-size: 12px; text-align: center; }
     .setup-field textarea { min-height: 90px; resize: vertical; }
     .setup-step-panel[hidden] { display: none; }
-    .setup-chore-list { display: grid; gap: 8px; max-height: min(34vh, 270px); overflow: auto; padding: 1px 2px 3px 0; }
-    .setup-chore-row { padding: 10px; border: 1px solid #e8e9ef; border-radius: 13px; background: #fafaff; }
-    .setup-chore-top { display: grid; grid-template-columns: 24px minmax(0,1fr); align-items: center; gap: 7px; }
+    .setup-profile-fields { display: grid; gap: 13px; max-width: 390px; margin: 0 auto; }
+    .setup-member-list { display: grid; gap: 7px; max-width: 390px; margin: 14px auto; }
+    .setup-member-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.2fr) 34px; align-items: center; gap: 7px; padding: 8px; border-radius: 99px; background: #f3f4ff; text-align: center; }
+    .setup-member-row strong { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+    .setup-member-row span { overflow: hidden; color: #686a75; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .setup-member-row button { width: 30px; height: 30px; border: 0; border-radius: 50%; color: #686a75; background: white; font-size: 17px; cursor: pointer; }
+    .setup-member-add { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; max-width: 390px; align-items: end; margin: 0 auto; padding-top: 14px; border-top: 1px solid #ececf1; }
+    .setup-member-add button { grid-column: 1 / -1; min-height: 43px; border: 0; border-radius: 99px; color: #4d5ed0; background: #edf0ff; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .setup-chore-list { display: grid; gap: 8px; max-height: min(38vh, 310px); overflow: auto; padding: 1px 4px 3px; }
+    .setup-chore-row { padding: 12px; border: 1px solid #e8e9ef; border-radius: 18px; background: #fafaff; }
+    .setup-chore-top { display: flex; align-items: center; justify-content: center; gap: 9px; text-align: center; }
     .setup-chore-top input { width: 18px; height: 18px; margin: 0; accent-color: var(--blue-dark); }
     .setup-chore-name { min-width: 0; font-size: 11px; font-weight: 800; }
-    .setup-chore-controls { display: grid; grid-template-columns: 1fr 1.2fr; gap: 8px; margin: 9px 0 0 31px; }
-    .setup-chore-controls .setup-field { font-size: 9px; }
-    .setup-chore-controls input, .setup-chore-controls select { min-height: 34px; padding: 7px; font-size: 10px; }
-    .setup-add-task { display: grid; grid-template-columns: minmax(0,1fr) 76px 105px; align-items: end; gap: 7px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #ececf1; }
+    .setup-chore-controls { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; max-width: 390px; margin: 12px auto 0; }
+    .setup-chore-controls .setup-field { font-size: 10px; }
+    .setup-chore-controls input, .setup-chore-controls select { min-height: 39px; padding: 7px; font-size: 10px; }
+    .setup-add-task { display: grid; grid-template-columns: minmax(0,1fr) 76px 105px; align-items: end; gap: 9px; margin-top: 15px; padding-top: 14px; border-top: 1px solid #ececf1; }
     .setup-add-task .setup-field { font-size: 9px; }
     .setup-add-task input, .setup-add-task select { min-height: 36px; padding: 7px; font-size: 10px; }
-    .setup-add-task button { grid-column: 1 / -1; min-height: 37px; border: 0; border-radius: 10px; color: #4d5ed0; background: #edf0ff; font-size: 11px; font-weight: 800; cursor: pointer; }
-    .setup-note { margin: 8px 0 0; color: #767781; font-size: 10px; line-height: 1.45; }
-    .setup-time-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin: 15px 0 5px; }
-    .setup-time-option { display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 10px; border: 1px solid #e3e5ee; border-radius: 13px; background: #fafaff; cursor: pointer; }
-    .setup-time-option:has(input:checked) { border-color: var(--blue-dark); background: #f0f2ff; }
-    .setup-time-option input { accent-color: var(--blue-dark); }
-    .setup-time-option strong { display: block; font-size: 12px; }
-    .setup-time-option span { color: #777984; font-size: 9px; }
-    .setup-time-footnote { margin: 8px 0 0; color: #767781; font-size: 10px; line-height: 1.45; }
+    .setup-add-task button { grid-column: 1 / -1; min-height: 43px; border: 0; border-radius: 99px; color: #4d5ed0; background: #edf0ff; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .setup-note { margin: 12px 0 0; color: #767781; font-size: 10px; line-height: 1.45; text-align: center; }
+    .onboarding-screen button:not(:disabled) { transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease; }
+    .onboarding-screen button:not(:disabled):hover { box-shadow: 0 7px 18px #5268d326; transform: translateY(-2px); }
+    .onboarding-screen button:disabled { box-shadow: none; cursor: not-allowed; opacity: .42; transform: none; }
+    .onboarding-screen button:focus-visible, .onboarding-screen input:focus-visible, .onboarding-screen select:focus-visible { outline: 3px solid #8192ff70; outline-offset: 2px; }
     .invite-modal { width: min(100%, 410px); }
     .invite-mail-link { display: block; margin-top: 11px; padding: 11px; border-radius: 11px; color: white; background: var(--blue-dark); font-size: 12px; font-weight: 800; text-align: center; text-decoration: none; }
     .invite-mail-link[hidden] { display: none; }
     .invite-status { margin: 9px 0 0; color: #4f5dbe; font-size: 11px; line-height: 1.4; }
+    .howto-modal { width: min(100%, 410px); }
+    .howto-steps { display: grid; gap: 9px; margin: 14px 0 18px; }
+    .howto-item { display: grid; grid-template-columns: 34px minmax(0,1fr); align-items: start; gap: 9px; padding: 10px; border-radius: 12px; background: #f5f6ff; }
+    .howto-item-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: white; font-size: 17px; }
+    .howto-item strong { display: block; font-size: 11px; }
+    .howto-item span { display: block; margin-top: 3px; color: #686a75; font-size: 10px; line-height: 1.45; }
+    .guide-overlay { position: fixed; z-index: 20; inset: 0; pointer-events: none; }
+    .guide-shade { position: fixed; z-index: 20; background: #111321c9; pointer-events: auto; }
+    .guide-focus { position: fixed; z-index: 21; border: 3px solid white; box-shadow: 0 0 0 2px var(--blue-dark); pointer-events: none; }
+    .guide-focus-hitarea { position: fixed; z-index: 22; background: transparent; pointer-events: auto; }
+    .guide-card { position: fixed; z-index: 23; width: min(420px,calc(100vw - 32px)); padding: 18px; border-radius: 18px; color: #252630; background: white; box-shadow: 0 16px 48px #0005; transform: translateX(-50%); pointer-events: auto; }
+    .guide-count { color: var(--blue-dark); font-size: 10px; font-weight: 850; letter-spacing: 1px; text-transform: uppercase; }
+    .guide-title { margin: 5px 0 0; font-size: 18px; font-weight: 850; text-align: center; }
+    .guide-copy { margin: 8px 0 16px; color: #626470; font-size: 12px; line-height: 1.5; text-align: center; }
+    .guide-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .guide-actions button, .guide-dismiss { min-height: 40px; padding: 9px 15px; border: 0; border-radius: 99px; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .guide-actions button:not(:disabled):hover, .guide-dismiss:hover { box-shadow: 0 5px 14px #5268d326; transform: translateY(-2px); }
+    .guide-dismiss { color: #5e606b; background: #f0f0f3; }
+    .guide-prev { color: #555762; background: #ededee; }
+    .guide-next { color: white; background: var(--blue-dark); }
+    .guide-actions button:disabled { cursor: not-allowed; opacity: .4; }
+    .guide-overlay[hidden] { display: none; }
     @media (min-width: 431px) {
       .app { min-height: min(920px, 100vh); }
     }
@@ -310,11 +352,8 @@
       .quick-card { min-height: 74px; }
     }
     @media (max-width: 360px) {
-      .onboarding-card { padding: 22px 16px 16px; }
-      .onboarding-footer { gap: 4px; }
-      .onboarding-actions { gap: 4px; }
-      .onboarding-skip, .onboarding-prev { padding: 8px 7px; font-size: 11px; }
-      .onboarding-next { min-width: 110px; padding: 10px 9px; font-size: 11px; }
+      .onboarding-screen { padding: 22px 15px; }
+      .setup-add-task { grid-template-columns: minmax(0,1fr) 62px 92px; }
     }
   </style>
 </head>
@@ -323,17 +362,24 @@
     <header>
       <div class="top-progress">
         <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-        <button class="help-button" id="help-open" aria-label="Otevřít nastavení družiny" title="Nastavení družiny">?</button>
+        <button class="help-button" id="help-open" aria-label="Jak aplikace funguje?" title="Jak aplikace funguje?">?</button>
       </div>
       <div class="household-label" id="household-label" hidden></div>
       <div class="crew-strip">
         <div class="avatar-stack" id="tiny-avatars"></div>
-        <div class="crew-total"><strong id="cohesion-count"></strong><span>do společné odměny</span></div>
+        <div class="crew-total" id="cohesion-meter"><strong id="cohesion-count"></strong><span>do společné odměny</span></div>
         <button class="settle-button" id="settle-up">Settle up</button>
       </div>
     </header>
     <main>
       <section id="home-screen" class="screen active">
+        <button class="draw-needed" id="draw-needed" type="button" aria-live="polite" hidden>
+          <span class="draw-needed-copy">
+            <span class="draw-needed-label">Na tento týden zbývá vylosovat</span>
+            <strong class="draw-needed-counts" id="draw-needed-counts"></strong>
+          </span>
+          <span class="draw-needed-arrow" aria-hidden="true">›</span>
+        </button>
         <section class="week-card">
           <div class="week-head" style="grid-template-columns:39px 1fr 39px 39px">
             <button id="week-prev" aria-label="Předchozí týden">‹</button>
@@ -346,6 +392,17 @@
         <section class="supply-card">
           <div class="supply-head">Chybí / Koupit</div>
           <div id="supply-list"></div>
+          <div class="supply-add-wrap">
+            <button class="supply-add" id="supply-add" type="button" aria-label="Přidat věc, která chybí" aria-expanded="false" aria-controls="supply-form">+</button>
+          </div>
+          <form class="supply-form" id="supply-form" aria-label="Přidat na seznam" hidden>
+            <input class="supply-input" id="supply-name" type="text" maxlength="60" placeholder="Co chybí?" aria-label="Co chybí" required>
+            <select class="supply-owner-select" id="supply-owner" aria-label="Koho se to týká"></select>
+            <div class="supply-form-actions">
+              <button class="supply-cancel" id="supply-cancel" type="button">Zrušit</button>
+              <button class="supply-save" type="submit">Přidat</button>
+            </div>
+          </form>
         </section>
         <section class="quest-zone" aria-label="Losování úkolu">
           <div class="quick-cards">
@@ -374,46 +431,62 @@
       </section>
     </main>
   </div>
-  <div class="onboarding-backdrop" id="onboarding-modal" hidden>
-    <section class="onboarding-card setup-modal" role="dialog" aria-modal="true" aria-labelledby="onboarding-title" aria-describedby="onboarding-copy">
+  <div class="onboarding-screen" id="onboarding-modal" hidden>
+    <section class="onboarding-card setup-modal" aria-labelledby="onboarding-title">
       <div class="onboarding-top">
-        <div class="onboarding-eyebrow">Vytvoření družiny · <span id="onboarding-step-label">Krok 1 ze 3</span></div>
-        <button class="onboarding-close" id="onboarding-close" aria-label="Zavřít nastavení">×</button>
+        <div class="onboarding-eyebrow">Domácí výprava · <span id="onboarding-step-label">Krok 1 ze 4</span></div>
       </div>
       <div class="onboarding-progress" id="onboarding-progress" aria-hidden="true"></div>
       <div class="onboarding-icon" id="onboarding-icon" aria-hidden="true"></div>
       <h2 class="onboarding-title" id="onboarding-title"></h2>
       <p class="onboarding-copy" id="onboarding-copy"></p>
       <div class="setup-step-panel" data-setup-step="0">
+      </div>
+      <div class="setup-step-panel" data-setup-step="1" hidden>
+        <div class="setup-profile-fields">
+          <label class="setup-field">Jméno
+            <input id="setup-profile-name" maxlength="48" autocomplete="given-name" placeholder="Tvoje jméno">
+          </label>
+          <label class="setup-field">Přezdívka v družině
+            <input id="setup-profile-nickname" maxlength="32" placeholder="Jak ti budou říkat ostatní?">
+          </label>
+          <label class="setup-field">E-mail
+            <input id="setup-profile-email" type="email" maxlength="120" autocomplete="email" placeholder="ty@domena.cz">
+          </label>
+        </div>
         <div class="setup-mode-grid">
           <button class="setup-mode-card" type="button" data-household-mode="create">
             <strong>🏡 Založit novou partu</strong>
-            <span>Vytvoř družinu pro svou domácnost.</span>
           </button>
           <button class="setup-mode-card" type="button" data-household-mode="join">
-            <strong>🗝️ Už mám pozvánku</strong>
-            <span>Připoj se k existující družině.</span>
+            <strong>🗝️ Přihlásit se k rodině</strong>
           </button>
         </div>
-        <div class="setup-fields" id="create-fields" hidden>
-          <label class="setup-field">Jak se bude tvoje parta jmenovat?
+      </div>
+      <div class="setup-step-panel" id="setup-household-step" data-setup-step="2" hidden>
+        <div id="create-family-fields">
+          <label class="setup-field">Jméno domácnosti
             <input id="setup-household-name" maxlength="48" placeholder="např. Družina domácího krbu">
           </label>
-          <label class="setup-field">Jak ti máme říkat?
-            <input id="setup-player-name" maxlength="32" placeholder="Tvoje jméno">
-          </label>
+          <div class="setup-member-list" id="setup-members-list"></div>
+          <div class="setup-member-add">
+            <label class="setup-field">Jméno člena
+              <input id="new-member-name" maxlength="48" placeholder="např. Maty">
+            </label>
+            <label class="setup-field">E-mail
+              <input id="new-member-email" type="email" maxlength="120" placeholder="maty@domena.cz">
+            </label>
+            <button type="button" id="add-family-member">＋ Přidat člena rodiny</button>
+          </div>
         </div>
-        <div class="setup-fields" id="join-fields" hidden>
-          <label class="setup-field">Tvůj zvací kód
+        <div id="join-family-fields" hidden>
+          <label class="setup-field">Pozvánkový kód rodiny
             <input id="setup-invite-code" maxlength="32" autocomplete="off" placeholder="např. ELF-7K2P">
           </label>
-          <label class="setup-field">Jak ti máme říkat?
-            <input id="setup-join-name" maxlength="32" placeholder="Tvoje jméno">
-          </label>
-          <p class="setup-note">Připojení ke skutečné sdílené družině vyžaduje server; v tomto prototypu uvidíš ukázkovou partu.</p>
+          <p class="setup-note">Připojení použije ukázkovou domácnost.</p>
         </div>
       </div>
-      <div class="setup-step-panel" id="setup-chores-step" data-setup-step="1" hidden>
+      <div class="setup-step-panel" id="setup-chores-step" data-setup-step="3" hidden>
         <div class="setup-chore-list" id="setup-chore-list"></div>
         <div class="setup-add-task">
           <label class="setup-field">Nový úkol
@@ -428,20 +501,49 @@
           <button type="button" id="add-setup-task">＋ Přidat úkol do nabídky</button>
         </div>
       </div>
-      <div class="setup-step-panel" id="setup-time-step" data-setup-step="2" hidden>
-        <div class="setup-time-grid">
-          <label class="setup-time-option"><input type="radio" name="weekly-time" value="15"><span><strong>15 minut</strong><span>Rychlá výprava</span></span></label>
-          <label class="setup-time-option"><input type="radio" name="weekly-time" value="30"><span><strong>30 minut</strong><span>Lehký úklid</span></span></label>
-          <label class="setup-time-option"><input type="radio" name="weekly-time" value="60"><span><strong>1 hodina</strong><span>Tak akorát</span></span></label>
-          <label class="setup-time-option"><input type="radio" name="weekly-time" value="120"><span><strong>2+ hodiny</strong><span>Jsem připraven/a</span></span></label>
-        </div>
-        <p class="setup-time-footnote">Je to tvůj týdenní časový rozpočet. Pomůže družině vybrat přiměřený balíček — kdykoli ho můžeš změnit.</p>
-      </div>
       <div class="onboarding-footer">
-        <button class="onboarding-skip" id="onboarding-skip">Později</button>
         <div class="onboarding-actions">
           <button class="onboarding-prev" id="onboarding-prev">Zpět</button>
-          <button class="onboarding-next" id="onboarding-next">Pokračovat</button>
+        </div>
+        <button class="onboarding-next" id="onboarding-next">Jdeme na to</button>
+      </div>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="howto-modal" hidden>
+    <section class="draw-modal howto-modal" role="dialog" aria-modal="true" aria-labelledby="howto-title">
+      <header class="modal-head">
+        <div><div class="modal-eyebrow">Průvodce družiny</div><h2 class="modal-title" id="howto-title">Jak funguje domácí výprava?</h2></div>
+        <button class="modal-close" id="howto-close" aria-label="Zavřít vysvětlení">×</button>
+      </header>
+      <p class="modal-copy">Úklid proměníme v kooperativní hru ve stylu D&amp;D.</p>
+      <div class="howto-steps">
+        <div class="howto-item"><div class="howto-item-icon">🃏</div><div><strong>Losujte karty úkolů</strong><span>Vyberte balíček podle času a odhalte úkol. Rozdělení se střídá, aby nikdo neměl stejnou práci dvakrát po sobě.</span></div></div>
+        <div class="howto-item"><div class="howto-item-icon">✨</div><div><strong>Plňte questy společně</strong><span>Označením hotového úkolu získá jeho řešitel body a posune ukazatel sounáležitosti.</span></div></div>
+        <div class="howto-item"><div class="howto-item-icon">🏆</div><div><strong>Odemkněte odměny</strong><span>Za každých 100 společných bodů čeká bonus pro avatara.</span></div></div>
+      </div>
+      <div class="modal-actions">
+        <button class="secondary-button" id="howto-tour">Ukázat průvodce</button>
+        <button class="secondary-button" id="howto-invite">Pozvat elfy</button>
+        <button class="primary-button" id="howto-done">Rozumím</button>
+      </div>
+    </section>
+  </div>
+  <div class="guide-overlay" id="guide-overlay" hidden>
+    <div class="guide-shade" id="guide-shade-top"></div>
+    <div class="guide-shade" id="guide-shade-left"></div>
+    <div class="guide-shade" id="guide-shade-right"></div>
+    <div class="guide-shade" id="guide-shade-bottom"></div>
+    <div class="guide-focus" id="guide-focus"></div>
+    <div class="guide-focus-hitarea" id="guide-focus-hitarea" aria-hidden="true"></div>
+    <section class="guide-card" id="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-describedby="guide-copy">
+      <div class="guide-count" id="guide-count"></div>
+      <h2 class="guide-title" id="guide-title"></h2>
+      <p class="guide-copy" id="guide-copy"></p>
+      <div class="guide-actions">
+        <button class="guide-dismiss" id="guide-close">Ukončit</button>
+        <div class="onboarding-actions">
+          <button class="guide-prev" id="guide-prev">Zpět</button>
+          <button class="guide-next" id="guide-next">Další</button>
         </div>
       </div>
     </section>
@@ -449,7 +551,7 @@
   <div class="modal-backdrop" id="invite-modal" hidden>
     <section class="draw-modal invite-modal" role="dialog" aria-modal="true" aria-labelledby="invite-title">
       <header class="modal-head">
-        <div><div class="modal-eyebrow">Poslední krok</div><h2 class="modal-title" id="invite-title">Přistěhuj si elfy</h2></div>
+        <div><div class="modal-eyebrow">Pozvánky do družiny</div><h2 class="modal-title" id="invite-title">Přistěhuj si elfy</h2></div>
         <button class="modal-close" id="invite-close" aria-label="Zavřít pozvánky">×</button>
       </header>
       <p class="modal-copy">Pozvi spolubydlící do družiny. V prototypu se připraví zpráva v tvém e-mailovém programu — odeslání potvrdíš tam.</p>
@@ -520,7 +622,9 @@
 
   <script>
     const STORAGE_KEY = "druzina-doma-v1";
-    const SETUP_KEY = "druzina-doma-setup-v2";
+    const SETUP_KEY = "druzina-doma-setup-v4";
+    const HOWTO_KEY = "druzina-doma-howto-v1";
+    const GUIDE_KEY = "druzina-doma-guide-v1";
     const frequencies = [
       { days: 3, label: "Každé 3 dny" },
       { days: 7, label: "1× týdně" },
@@ -548,8 +652,11 @@
       ],
       supplies: [{ id: "toaletak", name: "Toaleťák", owner: "všichni", bought: false }],
       assignments: [],
+      completions: [],
       deckOrder: [],
-      invites: []
+      invites: [],
+      profile: null,
+      onboardingComplete: false
     };
 
     const $ = (selector) => document.querySelector(selector);
@@ -560,8 +667,7 @@
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
     };
     const dayGap = (a, b) => Math.floor((Date.parse(`${b}T12:00:00`) - Date.parse(`${a}T12:00:00`)) / 86400000);
-    const isDue = (chore) => dayGap(chore.lastCompleted, todayISO()) >= Number(chore.days);
-    const dueChores = () => state.chores.filter((chore) => isDue(chore) && !state.assignments.some((assignment) => assignment.choreId === chore.id));
+    const dueChores = () => state.chores.filter((chore) => dueByCurrentWeek(chore) && !state.assignments.some((assignment) => assignment.choreId === chore.id));
     const frequencyLabel = (days) => (frequencies.find((item) => item.days === Number(days)) || { label: `1× za ${days} dní` }).label;
     const taskNoun = (count) => count === 1 ? "úkol" : count >= 2 && count <= 4 ? "úkoly" : "úkolů";
     const dayNoun = (count) => count === 1 ? "den" : count >= 2 && count <= 4 ? "dny" : "dní";
@@ -570,27 +676,52 @@
     let weekOffset = 0;
     let sessionDrawn = [];
     let drawFinishTimer;
+    let guideIndex = 0;
+    let guideTimer;
+    let guidePreviousOverflow = "";
+    let guideActive = false;
     let onboardingIndex = 0;
-    let onboardingReturnFocus = null;
     let inviteReturnFocus = null;
     let setupMode = "";
-    let setupTimeMinutes = 60;
     let setupChores = [];
+    let setupMembers = [];
     const setupSteps = [
       {
         icon: "🏰",
         title: "Vítej ve světě společného úklidu",
-        copy: "Tvoje domácnost je družina. Vyber, jestli zakládáš novou partu, nebo už máš pozvánku od ostatních."
+        copy: "Připrav svou domácí družinu."
+      },
+      {
+        icon: "🧝",
+        title: "Tvoje údaje",
+        copy: "Vyplň údaje a vyber svou rodinu."
+      },
+      {
+        icon: "🏡",
+        title: "Tvoje domácnost",
+        copy: "Pojmenuj ji a přidej členy."
       },
       {
         icon: "📜",
-        title: "Co je potřeba udělat?",
-        copy: "Zaškrtni úkoly, které chcete losovat. U každého můžeš upravit časovou náročnost i to, jak často se má vracet."
+        title: "Úkoly",
+        copy: "Vyber úkoly a nastav jejich čas i frekvenci."
+      }
+    ];
+    const guideSteps = [
+      {
+        target: "#cohesion-meter",
+        title: "Sounáležitost",
+        copy: "Tady vidíš, jak se vaší družině daří. Společný cíl je 100 bodů."
       },
       {
-        icon: "⏳",
-        title: "Kolik času máš na výpravu?",
-        copy: "Nastav si týdenní čas, který můžeš věnovat úklidu. Potom se přeneseme na nástěnku a můžeš přizvat ostatní elfy."
+        target: "#home-task-list",
+        title: "Týdenní úkoly",
+        copy: "Tady najdeš úkoly, které vás tento týden čekají."
+      },
+      {
+        target: "#draw-open",
+        title: "Losování",
+        copy: "Tady si vylosuješ svůj další úkol."
       }
     ];
 
@@ -609,17 +740,26 @@
       const { end } = selectedWeekDates();
       return dayGap(chore.lastCompleted, end) >= Number(chore.days);
     }
+    function dueByCurrentWeek(chore) {
+      const today = new Date(`${todayISO()}T12:00:00`);
+      const mondayOffset = (today.getDay() + 6) % 7;
+      const end = shiftDate(todayISO(), 6 - mondayOffset);
+      return dayGap(chore.lastCompleted, end) >= Number(chore.days);
+    }
 
     function normalizeState(parsed) {
       const durationDefaults = { kuchyne: 15, koupelna: 30, vysat: 20, recyklace: 5, okna: 60, kytky: 5, podlaha: 20 };
-      const newSamples = clone(seed.chores).filter((sample) => !parsed.chores.some((chore) => chore.id === sample.id));
-      parsed.chores.push(...newSamples);
+      if (parsed.onboardingComplete !== true) {
+        const newSamples = clone(seed.chores).filter((sample) => !parsed.chores.some((chore) => chore.id === sample.id));
+        parsed.chores.push(...newSamples);
+      }
       parsed.chores.forEach((chore) => {
         if (!Array.isArray(chore.history)) chore.history = [];
         if (!Number.isFinite(chore.durationMin)) chore.durationMin = durationDefaults[chore.id] || (chore.points <= 12 ? 10 : chore.points <= 18 ? 25 : 45);
         chore.difficulty = chore.durationMin <= 10 ? "easy" : chore.durationMin <= 30 ? "medium" : "hard";
       });
       if (!Array.isArray(parsed.assignments)) parsed.assignments = [];
+      if (!Array.isArray(parsed.completions)) parsed.completions = [];
       if (parsed.currentCard && parsed.currentCard.choreId && parsed.currentCard.roommateId) {
         parsed.assignments.push({ choreId: parsed.currentCard.choreId, roommateId: parsed.currentCard.roommateId, assignedAt: todayISO() });
         parsed.currentCard = null;
@@ -632,6 +772,7 @@
       if (!Array.isArray(parsed.deckOrder)) parsed.deckOrder = [];
       if (!Array.isArray(parsed.invites)) parsed.invites = [];
       if (typeof parsed.householdName !== "string") parsed.householdName = "";
+      if (!parsed.profile || typeof parsed.profile !== "object") parsed.profile = null;
       if (!Number.isFinite(parsed.myWeeklyMinutes)) parsed.myWeeklyMinutes = 60;
       if (typeof parsed.level !== "number") parsed.level = Math.floor(parsed.cohesion / 100) + 1;
       return parsed;
@@ -662,9 +803,17 @@
     }
     function shouldAutoOpenOnboarding() {
       try {
-        return !localStorage.getItem(STORAGE_KEY) && !localStorage.getItem(SETUP_KEY);
+        return !localStorage.getItem(SETUP_KEY);
       } catch (error) {
         console.warn("Stav úvodního nastavení se nepodařilo načíst.", error);
+        return false;
+      }
+    }
+    function shouldAutoStartGuide() {
+      try {
+        return !localStorage.getItem(GUIDE_KEY);
+      } catch (error) {
+        console.warn("Stav průvodce se nepodařilo načíst.", error);
         return false;
       }
     }
@@ -692,8 +841,82 @@
       document.querySelectorAll("[data-household-mode]").forEach((button) => {
         button.classList.toggle("active", button.dataset.householdMode === mode);
       });
-      $("#create-fields").hidden = mode !== "create";
-      $("#join-fields").hidden = mode !== "join";
+      $("#create-family-fields").hidden = mode !== "create";
+      $("#join-family-fields").hidden = mode !== "join";
+      updateOnboardingControls();
+    }
+    function renderSetupMembers() {
+      const list = $("#setup-members-list");
+      if (!setupMembers.length) {
+        list.innerHTML = "";
+        return;
+      }
+      list.innerHTML = setupMembers.map((member, index) => `
+        <div class="setup-member-row">
+          <strong>${escapeHTML(member.name)}</strong>
+          <span>${escapeHTML(member.email)}</span>
+          <button type="button" data-remove-member="${index}" aria-label="Odebrat ${escapeHTML(member.name)}">×</button>
+        </div>`).join("");
+    }
+    function validEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+    }
+    function isSetupStepValid() {
+      if (onboardingIndex === 0) return true;
+      if (onboardingIndex === 1) {
+        return Boolean(
+          setupMode &&
+          $("#setup-profile-name").value.trim() &&
+          $("#setup-profile-nickname").value.trim() &&
+          validEmail($("#setup-profile-email").value)
+        );
+      }
+      if (onboardingIndex === 2) {
+        return setupMode === "create"
+          ? Boolean($("#setup-household-name").value.trim())
+          : setupMode === "join" && Boolean($("#setup-invite-code").value.trim());
+      }
+      return setupChores.some((chore) => chore.enabled) &&
+        setupChores.every((chore) => !chore.enabled || (Number(chore.durationMin) >= 1 && Number(chore.durationMin) <= 600));
+    }
+    function updateOnboardingControls() {
+      const next = $("#onboarding-next");
+      if (!next) return;
+      next.disabled = !isSetupStepValid();
+      const memberName = $("#new-member-name").value.trim();
+      const memberEmail = $("#new-member-email").value.trim().toLowerCase();
+      const ownEmail = $("#setup-profile-email").value.trim().toLowerCase();
+      $("#add-family-member").disabled = !(
+        memberName &&
+        validEmail(memberEmail) &&
+        memberEmail !== ownEmail &&
+        !setupMembers.some((member) => member.email.toLowerCase() === memberEmail)
+      );
+      const taskName = $("#new-task-name").value.trim();
+      const taskDuration = Number($("#new-task-duration").value);
+      $("#add-setup-task").disabled = !(
+        taskName &&
+        Number.isFinite(taskDuration) &&
+        taskDuration >= 1 &&
+        taskDuration <= 600 &&
+        !setupChores.some((chore) => chore.name.toLocaleLowerCase("cs") === taskName.toLocaleLowerCase("cs"))
+      );
+    }
+    function addSetupMember() {
+      const name = $("#new-member-name").value.trim();
+      const email = $("#new-member-email").value.trim().toLowerCase();
+      if (!name) { notify("Doplň jméno člena rodiny."); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { notify("Zadej platný e-mail člena rodiny."); return; }
+      const ownEmail = $("#setup-profile-email").value.trim().toLowerCase();
+      if (email === ownEmail || setupMembers.some((member) => member.email.toLowerCase() === email)) {
+        notify("Tento e-mail už je v družině uvedený.");
+        return;
+      }
+      setupMembers.push({ name, email });
+      $("#new-member-name").value = "";
+      $("#new-member-email").value = "";
+      renderSetupMembers();
+      updateOnboardingControls();
     }
     function renderOnboarding() {
       const step = setupSteps[onboardingIndex];
@@ -708,46 +931,51 @@
         panel.hidden = Number(panel.dataset.setupStep) !== onboardingIndex;
       });
       $("#onboarding-prev").hidden = onboardingIndex === 0;
-      $("#onboarding-next").textContent = onboardingIndex === setupSteps.length - 1 ? "Jdeme uklízet" : "Pokračovat";
+      $("#onboarding-next").textContent = ["Jdeme na to", "Pokračovat", setupMode === "join" ? "Připojit se k rodině" : "Založit rodinu", "Uložit"][onboardingIndex];
+      updateOnboardingControls();
     }
     function openOnboarding() {
-      onboardingReturnFocus = document.activeElement;
       onboardingIndex = 0;
       setupMode = "";
-      setupTimeMinutes = Number(state.myWeeklyMinutes) || 60;
       setupChores = state.chores.map((chore) => ({ ...clone(chore), enabled: true }));
+      setupMembers = [];
       $("#setup-household-name").value = state.householdName || "";
-      $("#setup-player-name").value = "";
-      $("#setup-join-name").value = "";
+      $("#setup-profile-name").value = state.profile?.name || "";
+      $("#setup-profile-nickname").value = state.profile?.nickname || "";
+      $("#setup-profile-email").value = state.profile?.email || "";
       $("#setup-invite-code").value = "";
+      $("#new-member-name").value = "";
+      $("#new-member-email").value = "";
       $("#new-task-name").value = "";
       $("#new-task-duration").value = "15";
       $("#new-task-frequency").innerHTML = frequencies.map((frequency) =>
         `<option value="${frequency.days}">${frequency.label}</option>`
       ).join("");
       $("#new-task-frequency").value = "7";
-      document.querySelectorAll('input[name="weekly-time"]').forEach((radio) => {
-        radio.checked = Number(radio.value) === setupTimeMinutes;
-      });
+      renderSetupMembers();
       updateSetupMode("");
       renderSetupChores();
       renderOnboarding();
       $("#onboarding-modal").hidden = false;
+      document.body.classList.add("onboarding-active");
       document.body.style.overflow = "hidden";
       $("#onboarding-next").focus();
     }
-    function closeOnboarding() {
-      $("#onboarding-modal").hidden = true;
-      document.body.style.overflow = "";
-      if (onboardingReturnFocus && onboardingReturnFocus.isConnected) onboardingReturnFocus.focus();
-    }
     function validateSetupStep() {
-      if (onboardingIndex === 0) {
+      if (onboardingIndex === 1) {
         if (!setupMode) { notify("Vyber, jestli zakládáš partu, nebo se připojuješ."); return false; }
-        const name = (setupMode === "create" ? $("#setup-player-name") : $("#setup-join-name")).value.trim();
-        if (!name) { notify("Doplň své jméno, ať tě družina pozná."); return false; }
+        if (!$("#setup-profile-name").value.trim() || !$("#setup-profile-nickname").value.trim()) {
+          notify("Doplň své jméno i přezdívku.");
+          return false;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("#setup-profile-email").value.trim())) {
+          notify("Zadej platný e-mail.");
+          return false;
+        }
+      }
+      if (onboardingIndex === 2) {
         if (setupMode === "create" && !$("#setup-household-name").value.trim()) {
-          notify("Pojmenuj svou družinu.");
+          notify("Pojmenuj svou domácnost.");
           return false;
         }
         if (setupMode === "join" && !$("#setup-invite-code").value.trim()) {
@@ -755,7 +983,7 @@
           return false;
         }
       }
-      if (onboardingIndex === 1) {
+      if (onboardingIndex === 3) {
         if (!setupChores.some((chore) => chore.enabled)) {
           notify("Vyber aspoň jeden úkol, který se bude losovat.");
           return false;
@@ -764,10 +992,6 @@
           notify("U každého vybraného úkolu nastav platný čas v minutách.");
           return false;
         }
-      }
-      if (onboardingIndex === 2 && !document.querySelector('input[name="weekly-time"]:checked')) {
-        notify("Vyber, kolik času můžeš úklidu věnovat.");
-        return false;
       }
       return true;
     }
@@ -799,6 +1023,7 @@
       });
       renderSetupChores();
       $("#new-task-name").value = "";
+      updateOnboardingControls();
       notify(`Úkol „${name}“ je v nabídce.`);
     }
     function finishOnboarding() {
@@ -814,12 +1039,21 @@
         delete chore.enabled;
         return chore;
       });
-      const playerName = (setupMode === "create" ? $("#setup-player-name") : $("#setup-join-name")).value.trim();
+      const profile = {
+        name: $("#setup-profile-name").value.trim(),
+        nickname: $("#setup-profile-nickname").value.trim(),
+        email: $("#setup-profile-email").value.trim().toLowerCase()
+      };
+      const playerName = profile.nickname || profile.name;
       state.chores = selectedChores;
       state.assignments = state.assignments.filter((assignment) =>
         selectedChores.some((chore) => chore.id === assignment.choreId)
       );
-      state.myWeeklyMinutes = setupTimeMinutes;
+      state.completions = state.completions.filter((completion) =>
+        selectedChores.some((chore) => chore.id === completion.choreId)
+      );
+      state.profile = profile;
+      state.onboardingComplete = true;
       if (setupMode === "create") {
         state.householdName = $("#setup-household-name").value.trim();
         state.roommates = [{
@@ -831,11 +1065,24 @@
           points: 0,
           bonuses: 0
         }];
+        const colors = ["#dff3ea", "#ffe8ed", "#e5eaff", "#fff0d9"];
+        setupMembers.forEach((member, index) => {
+          state.roommates.push({
+            id: `invite-${Date.now()}-${index}`,
+            name: member.name,
+            avatar: ["🧝🏻‍♂️", "🧚🏻‍♀️", "🧙🏻‍♂️", "🧌"][index % 4],
+            role: "Čeká na pozvánku",
+            color: colors[index % colors.length],
+            points: 0,
+            bonuses: 0
+          });
+        });
         state.cohesion = 0;
         state.level = 1;
         state.assignments = [];
+        state.completions = [];
         state.supplies = [];
-        state.invites = [];
+        state.invites = setupMembers.map((member) => ({ ...member, status: "pending" }));
         state.inviteCode = `ELF-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
       } else {
         const existingMember = state.roommates.find((person) => person.name.toLocaleLowerCase("cs") === playerName.toLocaleLowerCase("cs"));
@@ -857,15 +1104,102 @@
       try { localStorage.setItem(SETUP_KEY, "done"); }
       catch (error) { console.warn("Dokončení nastavení se nepodařilo uložit.", error); }
       $("#onboarding-modal").hidden = true;
+      document.body.classList.remove("onboarding-active");
       document.body.style.overflow = "";
       render();
       openScreen("home");
-      window.setTimeout(openInviteModal, 250);
+      clearTimeout(guideTimer);
+      guideTimer = window.setTimeout(() => {
+        const homeActive = $("#home-screen").classList.contains("active");
+        const noOtherModal = $("#draw-modal").hidden && $("#invite-modal").hidden && $("#howto-modal").hidden;
+        if (homeActive && noOtherModal && shouldAutoStartGuide()) startGuidedTour();
+      }, 5000);
+    }
+    function openHowtoModal() {
+      $("#howto-tour").hidden = !$("#home-screen").classList.contains("active");
+      $("#howto-modal").hidden = false;
+      document.body.style.overflow = "hidden";
+      $("#howto-done").focus();
+    }
+    function closeHowtoModal() {
+      $("#howto-modal").hidden = true;
+      document.body.style.overflow = "";
+      try { localStorage.setItem(HOWTO_KEY, "done"); }
+      catch (error) { console.warn("Zobrazení průvodce se nepodařilo uložit.", error); }
+    }
+    function setGuideRect(id, left, top, width, height) {
+      const element = $(id);
+      element.style.left = `${left}px`;
+      element.style.top = `${top}px`;
+      element.style.width = `${Math.max(0, width)}px`;
+      element.style.height = `${Math.max(0, height)}px`;
+    }
+    function positionGuidedTour() {
+      if (!guideActive) return;
+      const step = guideSteps[guideIndex];
+      const target = document.querySelector(step.target);
+      if (!target || !target.getClientRects().length) {
+        finishGuidedTour();
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const left = Math.max(8, rect.left - 10);
+      const top = Math.max(8, rect.top - 10);
+      const right = Math.min(viewportWidth - 8, rect.right + 10);
+      const bottom = Math.min(viewportHeight - 8, rect.bottom + 10);
+      const width = Math.max(0, right - left);
+      const height = Math.max(0, bottom - top);
+
+      setGuideRect("#guide-shade-top", 0, 0, viewportWidth, top);
+      setGuideRect("#guide-shade-left", 0, top, left, height);
+      setGuideRect("#guide-shade-right", right, top, viewportWidth - right, height);
+      setGuideRect("#guide-shade-bottom", 0, bottom, viewportWidth, viewportHeight - bottom);
+      setGuideRect("#guide-focus", left, top, width, height);
+      setGuideRect("#guide-focus-hitarea", left, top, width, height);
+      $("#guide-focus").style.borderRadius = getComputedStyle(target).borderRadius || "14px";
+      const card = $("#guide-card");
+      const cardHeight = card.getBoundingClientRect().height;
+      const below = viewportHeight - bottom;
+      const cardTop = below >= cardHeight + 20
+        ? bottom + 16
+        : Math.max(12, top - cardHeight - 16);
+      card.style.left = "50%";
+      card.style.top = `${cardTop}px`;
+    }
+    function renderGuidedTour() {
+      const step = guideSteps[guideIndex];
+      $("#guide-count").textContent = `Krok ${guideIndex + 1} z ${guideSteps.length}`;
+      $("#guide-title").textContent = step.title;
+      $("#guide-copy").textContent = step.copy;
+      $("#guide-prev").disabled = guideIndex === 0;
+      $("#guide-next").textContent = guideIndex === guideSteps.length - 1 ? "Hotovo" : "Další";
+      positionGuidedTour();
+    }
+    function startGuidedTour() {
+      if (!$("#home-screen").classList.contains("active")) return;
+      guideIndex = 0;
+      guideActive = true;
+      guidePreviousOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      $("#guide-overlay").hidden = false;
+      renderGuidedTour();
+      $("#guide-next").focus();
+    }
+    function finishGuidedTour() {
+      if (!guideActive) return;
+      guideActive = false;
+      $("#guide-overlay").hidden = true;
+      document.body.style.overflow = guidePreviousOverflow;
+      try { localStorage.setItem(GUIDE_KEY, "done"); }
+      catch (error) { console.warn("Dokončení průvodce se nepodařilo uložit.", error); }
+      $("#help-open").focus();
     }
     function openInviteModal() {
       const activeScreen = document.querySelector(".screen.active");
       inviteReturnFocus = activeScreen && activeScreen.id === "party-screen" ? $("#party-invite-open") : $("#draw-open");
-      $("#invite-emails").value = "";
+      $("#invite-emails").value = state.invites.map((invite) => invite.email).join("\n");
       $("#invite-status").hidden = true;
       $("#invite-mail-link").hidden = true;
       $("#invite-modal").hidden = false;
@@ -883,11 +1217,18 @@
       const invalid = entries.filter((email) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
       if (invalid.length) { notify(`Zkontroluj e-mail: ${invalid[0]}`); return; }
       const unique = [...new Set(entries.map((email) => email.toLowerCase()))];
-      const existing = new Set(state.invites.map((invite) => invite.email.toLowerCase()));
-      unique.filter((email) => !existing.has(email)).forEach((email) => state.invites.push({ email, status: "prepared", preparedAt: todayISO() }));
+      unique.forEach((email) => {
+        const existing = state.invites.find((invite) => invite.email.toLowerCase() === email);
+        if (existing) {
+          existing.status = "prepared";
+          existing.preparedAt = todayISO();
+        } else {
+          state.invites.push({ email, status: "prepared", preparedAt: todayISO() });
+        }
+      });
       const recipients = unique.map((email) => encodeURIComponent(email)).join(",");
       const subject = `Přidej se do družiny ${state.householdName || "Družina doma"}`;
-      const body = `Ahoj! Přidej se do naší družiny ${state.householdName || "Družina doma"}. V aplikaci vyber „Už mám pozvánku“ a zadej zvací kód ${state.inviteCode || "—"}.`;
+      const body = `Ahoj! Přidej se do naší družiny ${state.householdName || "Družina doma"}. V aplikaci vyber „Přihlásit se k rodině“ a zadej zvací kód ${state.inviteCode || "—"}.`;
       $("#invite-mail-link").href = `mailto:${recipients}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       if (!save()) return;
       const preparedText = unique.length === 1
@@ -1017,13 +1358,27 @@
       render();
       if (count) notify(`Rozděleno ${count} ${taskNoun(count)} do týdenního přehledu.`);
     }
+    function getCurrentRoommate() {
+      const profileName = state.profile && (state.profile.nickname || state.profile.name);
+      return state.roommates.find((person) => person.name.toLocaleLowerCase("cs") === String(profileName || "").toLocaleLowerCase("cs")) || state.roommates[0];
+    }
     function completeCard(choreId) {
       const assignmentIndex = state.assignments.findIndex((assignment) => assignment.choreId === choreId);
-      if (assignmentIndex < 0) return;
-      const [assignment] = state.assignments.splice(assignmentIndex, 1);
-      const chore = state.chores.find((item) => item.id === assignment.choreId);
-      const roommate = byId(assignment.roommateId);
+      const assignment = assignmentIndex < 0 ? null : state.assignments.splice(assignmentIndex, 1)[0];
+      const chore = state.chores.find((item) => item.id === choreId);
+      const roommate = assignment ? byId(assignment.roommateId) : getCurrentRoommate();
       if (!chore || !roommate) return;
+      const completion = {
+        choreId,
+        roommateId: roommate.id,
+        completedAt: todayISO(),
+        previousLastCompleted: chore.lastCompleted,
+        assignment,
+        historyAdded: !assignment,
+        bonusAwarded: false,
+        points: chore.points
+      };
+      if (completion.historyAdded) chore.history.push(roommate.id);
       chore.lastCompleted = todayISO();
       roommate.points += chore.points;
       state.cohesion += chore.points;
@@ -1031,11 +1386,49 @@
       if (state.cohesion >= state.level * 100) {
         state.level += 1;
         roommate.bonuses += 1;
+        completion.bonusAwarded = true;
         bonus = ` Milník splněn — ${roommate.name} získává bonus avatara ✨`;
       }
+      state.completions.push(completion);
       save();
       render();
       notify(`Quest splněn! +${chore.points} bodů pro ${roommate.name}.${bonus}`);
+    }
+    function undoCompletion(choreId) {
+      let completionIndex = -1;
+      for (let index = state.completions.length - 1; index >= 0; index -= 1) {
+        if (state.completions[index].choreId === choreId && state.completions[index].completedAt === todayISO()) {
+          completionIndex = index;
+          break;
+        }
+      }
+      const chore = state.chores.find((item) => item.id === choreId);
+      const [completion] = completionIndex < 0 ? [] : state.completions.splice(completionIndex, 1);
+      if (!chore) return;
+      if (completion) {
+        const roommate = byId(completion.roommateId);
+        chore.lastCompleted = completion.previousLastCompleted;
+        if (roommate) {
+          roommate.points = Math.max(0, roommate.points - completion.points);
+          if (completion.bonusAwarded) roommate.bonuses = Math.max(0, roommate.bonuses - 1);
+        }
+        state.cohesion = Math.max(0, state.cohesion - completion.points);
+        state.level = Math.floor(state.cohesion / 100) + 1;
+        if (completion.assignment) state.assignments.push(completion.assignment);
+        if (completion.historyAdded && chore.history[chore.history.length - 1] === completion.roommateId) chore.history.pop();
+      } else {
+        const historyRoommate = byId(chore.history[chore.history.length - 1]);
+        const roommate = historyRoommate || getCurrentRoommate();
+        const previousLevel = state.level;
+        chore.lastCompleted = shiftDate(todayISO(), -Number(chore.days));
+        if (roommate) roommate.points = Math.max(0, roommate.points - chore.points);
+        state.cohesion = Math.max(0, state.cohesion - chore.points);
+        state.level = Math.floor(state.cohesion / 100) + 1;
+        if (roommate && previousLevel > state.level) roommate.bonuses = Math.max(0, roommate.bonuses - (previousLevel - state.level));
+      }
+      save();
+      render();
+      notify("Splnění vráceno. Úkol můžeš znovu rozdělit nebo splnit.");
     }
     function renderHeader() {
       const progress = state.cohesion % 100;
@@ -1045,8 +1438,13 @@
       $("#cohesion-count").textContent = `${progress} / 100 bodů`;
       $("#tiny-avatars").innerHTML = state.roommates.map((person) => `<span class="avatar-chip" title="${escapeHTML(person.name)}" style="background:${person.color}">${person.avatar}</span>`).join("");
       $("#quick-cohesion").textContent = `Úroveň ${state.level} · ${progress} / 100 bodů`;
-      const pending = dueChores().length;
-      $("#quick-tasks").textContent = `Čeká ${pending} ${taskNoun(pending)}`;
+      const pending = dueChores();
+      $("#quick-tasks").textContent = `Čeká ${pending.length} ${taskNoun(pending.length)}`;
+      const pendingByDifficulty = ["easy", "medium", "hard"]
+        .map((difficulty) => ({ difficulty, count: pending.filter((chore) => chore.difficulty === difficulty).length }))
+        .filter((entry) => entry.count);
+      $("#draw-needed").hidden = !pending.length;
+      $("#draw-needed-counts").textContent = pendingByDifficulty.map((entry) => `${entry.count}× ${entry.difficulty}`).join(" · ");
     }
     function renderTasks() {
       const { start } = selectedWeekDates();
@@ -1057,14 +1455,18 @@
         const dueDate = shiftDate(chore.lastCompleted, Number(chore.days));
         const dueInWeek = dueThisWeek(chore);
         const remaining = Math.max(0, dayGap(todayISO(), dueDate));
-        const hint = isAssigned ? `přiděleno: ${escapeHTML(byId(assigned.roommateId).name)}` : dueInWeek && weekOffset === 0 && isDue(chore) ? "čeká na los" : dueDate < start ? "po termínu" : remaining === 0 ? "dnes" : `zbývá: ${remaining} ${dayNoun(remaining)}`;
-        return `<div class="task-row"><div class="task-copy"><div class="task-line"><span class="task-name">${chore.icon} &nbsp;${escapeHTML(chore.name)}</span><span class="task-remaining">(${hint})</span></div></div><input class="task-check" type="checkbox" data-complete="${chore.id}" aria-label="Označit jako splněný: ${escapeHTML(chore.name)}" ${completeToday && weekOffset === 0 ? "checked" : ""} ${isAssigned ? "" : "disabled"}></div>`;
+        const hint = isAssigned ? `přiděleno: ${escapeHTML(byId(assigned.roommateId).name)}` : dueInWeek && weekOffset === 0 ? "čeká na los" : dueDate < start ? "po termínu" : remaining === 0 ? "dnes" : `zbývá: ${remaining} ${dayNoun(remaining)}`;
+        return `<div class="task-row"><div class="task-copy"><div class="task-line"><span class="task-name">${chore.icon} &nbsp;${escapeHTML(chore.name)}</span><span class="task-remaining">(${hint})</span></div></div><input class="task-check" type="checkbox" data-complete="${chore.id}" aria-label="${completeToday && weekOffset === 0 ? "Odebrat označení splnění" : "Označit jako splněný"}: ${escapeHTML(chore.name)}" ${completeToday && weekOffset === 0 ? "checked" : ""} ${weekOffset === 0 ? "" : "disabled"}></div>`;
       }).join("");
       $("#supply-list").innerHTML = state.supplies.map((supply) => `<label class="supply-row"><span>${escapeHTML(supply.name)} <span class="supply-owner">(${escapeHTML(supply.owner)})</span></span><input class="task-check supply-check" type="checkbox" data-supply="${supply.id}" aria-label="Označit ${escapeHTML(supply.name)}"></label>`).join("");
       state.supplies.forEach((supply) => {
         const checkbox = document.querySelector(`[data-supply="${supply.id}"]`);
         if (checkbox) checkbox.checked = Boolean(supply.bought);
       });
+      const ownerSelect = $("#supply-owner");
+      const selectedOwner = ownerSelect.value;
+      ownerSelect.innerHTML = `<option value="všichni">Všichni</option>${state.roommates.map((person) => `<option value="${escapeHTML(person.name)}">${escapeHTML(person.name)}</option>`).join("")}`;
+      if (state.roommates.some((person) => person.name === selectedOwner)) ownerSelect.value = selectedOwner;
       $("#week-label").textContent = `Týden ${weekOffset + 1}`;
       $("#week-prev").disabled = weekOffset === 0;
       $("#week-prev").style.opacity = weekOffset === 0 ? ".45" : "1";
@@ -1072,11 +1474,10 @@
     }
     function renderParty() {
       $("#party-list").innerHTML = state.roommates.map((person) => `<article class="party-row"><div class="party-avatar" style="background:${person.color}">${person.avatar}</div><div><div class="party-name">${escapeHTML(person.name)}</div><div class="party-role">${escapeHTML(person.role)}</div></div><div class="party-xp">${person.points} XP<div class="party-bonus">${person.bonuses ? `✨ ${person.bonuses}× odměna` : "bez odměny"}</div></div></article>`).join("");
-      const timeBudget = `<div class="invite-summary"><strong>Tvůj čas na úklid</strong>${state.myWeeklyMinutes >= 120 ? "2+ hodiny týdně" : `${state.myWeeklyMinutes} minut týdně`}</div>`;
       const invitations = state.invites.length
         ? `<div class="invite-summary"><strong>Připravené pozvánky</strong>${state.invites.map((invite) => `<div class="invite-email">${escapeHTML(invite.email)}</div>`).join("")}</div>`
         : "";
-      $("#invite-list").innerHTML = `${timeBudget}${invitations}`;
+      $("#invite-list").innerHTML = invitations;
     }
     function render() {
       renderHeader();
@@ -1085,11 +1486,60 @@
     }
 
     $("#draw-open").addEventListener("click", openDraw);
-    $("#help-open").addEventListener("click", openOnboarding);
-    $("#onboarding-close").addEventListener("click", () => closeOnboarding());
-    $("#onboarding-skip").addEventListener("click", () => closeOnboarding());
+    $("#draw-needed").addEventListener("click", openDraw);
+    $("#supply-add").addEventListener("click", () => {
+      const form = $("#supply-form");
+      form.hidden = !form.hidden;
+      const isOpen = !form.hidden;
+      $("#supply-add").textContent = isOpen ? "×" : "+";
+      $("#supply-add").setAttribute("aria-expanded", String(isOpen));
+      $("#supply-add").setAttribute("aria-label", isOpen ? "Zavřít přidávání" : "Přidat věc, která chybí");
+      if (isOpen) $("#supply-name").focus();
+    });
+    $("#supply-cancel").addEventListener("click", () => {
+      $("#supply-form").reset();
+      $("#supply-form").hidden = true;
+      $("#supply-add").textContent = "+";
+      $("#supply-add").setAttribute("aria-expanded", "false");
+      $("#supply-add").setAttribute("aria-label", "Přidat věc, která chybí");
+      $("#supply-add").focus();
+    });
+    $("#supply-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = $("#supply-name").value.trim();
+      if (!name) { $("#supply-name").focus(); return; }
+      const supply = {
+        id: `supply-${Date.now()}`,
+        name,
+        owner: $("#supply-owner").value || "všichni",
+        bought: false
+      };
+      state.supplies.push(supply);
+      if (!save()) {
+        state.supplies.pop();
+        return;
+      }
+      $("#supply-form").reset();
+      $("#supply-form").hidden = true;
+      $("#supply-add").textContent = "+";
+      $("#supply-add").setAttribute("aria-expanded", "false");
+      $("#supply-add").setAttribute("aria-label", "Přidat věc, která chybí");
+      render();
+      notify(`${name} přidáno na seznam.`);
+    });
+    $("#help-open").addEventListener("click", () => {
+      if (localStorage.getItem(SETUP_KEY)) openHowtoModal();
+      else openOnboarding();
+    });
     document.querySelectorAll("[data-household-mode]").forEach((button) => {
       button.addEventListener("click", () => updateSetupMode(button.dataset.householdMode));
+    });
+    $("#add-family-member").addEventListener("click", addSetupMember);
+    $("#setup-members-list").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-remove-member]");
+      if (!button) return;
+      setupMembers.splice(Number(button.dataset.removeMember), 1);
+      renderSetupMembers();
     });
     $("#onboarding-prev").addEventListener("click", () => {
       onboardingIndex = Math.max(0, onboardingIndex - 1);
@@ -1101,7 +1551,6 @@
         onboardingIndex += 1;
         renderOnboarding();
       } else {
-        setupTimeMinutes = Number(document.querySelector('input[name="weekly-time"]:checked').value);
         finishOnboarding();
       }
     });
@@ -1112,16 +1561,49 @@
       if (target.matches(".setup-enabled")) chore.enabled = target.checked;
       if (target.matches(".setup-duration")) chore.durationMin = Number(target.value);
       if (target.matches(".setup-frequency")) chore.days = Number(target.value);
+      updateOnboardingControls();
     });
     $("#add-setup-task").addEventListener("click", addSetupChore);
-    document.querySelectorAll('input[name="weekly-time"]').forEach((radio) => {
-      radio.addEventListener("change", () => { if (radio.checked) setupTimeMinutes = Number(radio.value); });
+    $("#onboarding-modal").addEventListener("input", (event) => {
+      if (event.target.matches(".setup-duration")) {
+        const chore = setupChores.find((item) => item.id === event.target.dataset.choreId);
+        if (chore) chore.durationMin = Number(event.target.value);
+      }
+      updateOnboardingControls();
     });
-    $("#onboarding-modal").addEventListener("click", (event) => {
-      if (event.target === $("#onboarding-modal")) closeOnboarding();
+    $("#onboarding-modal").addEventListener("change", updateOnboardingControls);
+    $("#howto-close").addEventListener("click", closeHowtoModal);
+    $("#howto-done").addEventListener("click", closeHowtoModal);
+    $("#howto-tour").addEventListener("click", () => {
+      closeHowtoModal();
+      startGuidedTour();
+    });
+    $("#howto-invite").addEventListener("click", () => {
+      closeHowtoModal();
+      openInviteModal();
+    });
+    $("#guide-close").addEventListener("click", finishGuidedTour);
+    $("#guide-prev").addEventListener("click", () => {
+      if (guideIndex > 0) {
+        guideIndex -= 1;
+        renderGuidedTour();
+      }
+    });
+    $("#guide-next").addEventListener("click", () => {
+      if (guideIndex < guideSteps.length - 1) {
+        guideIndex += 1;
+        renderGuidedTour();
+      } else {
+        finishGuidedTour();
+      }
+    });
+    window.addEventListener("resize", positionGuidedTour);
+    $("#howto-modal").addEventListener("click", (event) => {
+      if (event.target === $("#howto-modal")) closeHowtoModal();
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !$("#onboarding-modal").hidden) closeOnboarding();
+      if (event.key === "Escape" && guideActive) finishGuidedTour();
+      else if (event.key === "Escape" && !$("#howto-modal").hidden) closeHowtoModal();
       else if (event.key === "Escape" && !$("#invite-modal").hidden) closeInviteModal();
     });
     $("#settle-up").addEventListener("click", () => openScreen("party"));
@@ -1164,8 +1646,8 @@
     $("#home-task-list").addEventListener("change", (event) => {
       const checkbox = event.target.closest("[data-complete]");
       if (!checkbox) return;
-      if (state.assignments.some((assignment) => assignment.choreId === checkbox.dataset.complete)) completeCard(checkbox.dataset.complete);
-      else { checkbox.checked = false; notify("Nejdřív si úkol vylosuj."); }
+      if (checkbox.checked) completeCard(checkbox.dataset.complete);
+      else undoCompletion(checkbox.dataset.complete);
     });
     $("#supply-list").addEventListener("change", (event) => {
       const checkbox = event.target.closest("[data-supply]");
