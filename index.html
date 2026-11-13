@@ -175,7 +175,10 @@
     .continue-button { min-width: 112px; padding: 9px 16px; border: 0; border-radius: 99px; color: #fff; background: var(--blue); font-size: 11px; font-weight: 750; cursor: pointer; }
     .continue-button:hover { background: var(--blue-dark); }
     .reveal-stage { padding: 21px 17px; border-radius: 22px; background: #f3f4ff; text-align: center; }
-    .revealed-card { width: min(100%,260px); min-height: 230px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; margin: 0 auto; padding: 20px; border: 4px solid #cfd7ff; border-radius: 17px; background: linear-gradient(150deg,#fff,#edf0ff); box-shadow: 0 8px 24px #6175e522; }
+    .revealed-card { --tilt-x: 0deg; --tilt-y: 0deg; --glare-x: 50%; --glare-y: 50%; --glare-opacity: 0; position: relative; width: min(100%,260px); min-height: 230px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; margin: 0 auto; padding: 20px; overflow: hidden; border: 4px solid #cfd7ff; border-radius: 17px; background: linear-gradient(150deg,#fff,#edf0ff); box-shadow: 0 8px 24px #6175e522; transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style: preserve-3d; transition: transform .24s cubic-bezier(.2,.8,.2,1); will-change: transform; }
+    .revealed-card:after { position: absolute; z-index: 2; inset: -35%; border-radius: inherit; background: linear-gradient(115deg,transparent 35%,#fff0 43%,#ffffffb8 50%,#a9b8ff70 56%,transparent 68%); background-position: var(--glare-x) var(--glare-y); background-size: 190% 190%; content: ""; opacity: var(--glare-opacity); mix-blend-mode: screen; pointer-events: none; }
+    .revealed-card > * { position: relative; z-index: 1; }
+    .revealed-rarity { margin-bottom: 4px; color: #94701e; font-size: 9px; font-weight: 900; letter-spacing: 1.5px; }
     .revealed-icon { font-size: 49px; }
     .revealed-title { margin: 4px 0 0; font-size: 18px; font-weight: 850; }
     .revealed-detail { color: #686a75; font-size: 11px; }
@@ -230,10 +233,18 @@
     .deck-heading h3 { margin: 0; font-size: 15px; }
     .deck-heading p { margin: 2px 0 0; color: #777984; font-size: 10px; }
     .card-prompt { margin: 0 0 13px; font-size: 11px; font-weight: 750; text-align: center; }
-    .card-grid { width: min(100%, 305px); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin: 0 auto; }
-    .mystery-card { position: relative; aspect-ratio: .78; display: grid; place-items: center; border: 3px solid #cbd4ff; border-radius: 8px; color: #d9e0ff; background: #8799ff; font-size: 13px; cursor: pointer; box-shadow: inset 0 0 0 1px #ffffff42; transition: transform .16s, filter .16s; }
+    .card-grid { width: min(100%, 305px); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin: 0 auto; perspective: 1050px; perspective-origin: center; }
+    .mystery-card { --tilt-x: 0deg; --tilt-y: 0deg; --drag-x: 0px; --drag-y: 0px; --glare-x: 50%; --glare-y: 50%; --glare-opacity: 0; position: relative; aspect-ratio: .78; display: grid; place-items: center; overflow: hidden; border: 3px solid #cbd4ff; border-radius: 8px; color: #d9e0ff; background: linear-gradient(145deg,#96a6ff,#7186f1 52%,#899bff); font-size: 13px; cursor: grab; box-shadow: inset 0 0 0 1px #ffffff42; transform: translate3d(var(--drag-x),var(--drag-y),0) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style: preserve-3d; transition: transform .34s cubic-bezier(.2,.8,.2,1),filter .16s,box-shadow .16s; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform; }
     .mystery-card:before { content: "✦"; }
-    .mystery-card:hover { z-index: 1; filter: brightness(1.06); transform: translateY(-4px) rotate(-1deg); }
+    .mystery-card:after { position: absolute; z-index: 1; inset: -35%; border-radius: inherit; background: linear-gradient(115deg,transparent 35%,#fff0 43%,#ffffffa8 50%,#a9b8ff6e 56%,transparent 68%); background-position: var(--glare-x) var(--glare-y); background-size: 190% 190%; content: ""; opacity: var(--glare-opacity); mix-blend-mode: screen; pointer-events: none; transition: opacity .16s; }
+    .mystery-card:hover { z-index: 1; filter: brightness(1.06); }
+    .mystery-card:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .mystery-card.is-dragging { z-index: 2; cursor: grabbing; transition: none; }
+    .mystery-card.is-ready { filter: brightness(1.15); box-shadow: 0 0 0 2px #fff,0 0 24px #bfcaff; }
+    .mystery-card.is-leaving { transition: transform .22s cubic-bezier(.12,.75,.19,1),filter .22s; filter: brightness(1.24); }
+    .card-grid.final-pull .mystery-card { border-color: #edda9c; background: linear-gradient(145deg,#b6a36a,#89784f 52%,#ddc47a); box-shadow: inset 0 0 0 1px #fff8,0 0 14px #f4d65d33; }
+    .card-grid.final-pull .mystery-card:before { color: #fff3c3; }
+    .card-grid.is-committing .mystery-card { pointer-events: none; }
     .card-grid.dealing .mystery-card { animation: deal-card .55s cubic-bezier(.16,.76,.35,1.15) both; }
     .card-grid.dealing .mystery-card:nth-child(2) { animation-delay: .05s; }
     .card-grid.dealing .mystery-card:nth-child(3) { animation-delay: .1s; }
@@ -252,10 +263,16 @@
     .modal-actions button { min-height: 37px; padding: 8px 13px; border-radius: 99px; font-size: 10px; }
     .modal-actions .secondary-button { border: 0; }
     .modal-actions .primary-button { border: 0; }
-    .reveal-modal-stage { padding: 13px; border-radius: 18px; background: #f3f4ff; }
+    .reveal-modal-stage { position: relative; padding: 13px; overflow: hidden; border-radius: 18px; background: #f3f4ff; }
     .reveal-modal-stage .revealed-card { min-height: 270px; }
-    .reveal-modal-stage .revealed-card { animation: reveal-card .68s cubic-bezier(.18,.8,.28,1.2) both; }
+    #reveal-step.is-revealing .revealed-card { animation: reveal-card .68s cubic-bezier(.18,.8,.28,1.2) both; }
+    #reveal-step.rare-reveal.is-revealing .revealed-card { animation: reveal-card .68s cubic-bezier(.18,.8,.28,1.2) both, rare-aura 1s ease-out .58s both; }
+    #reveal-step.rare-reveal .revealed-card { border-color: #e8ce78; box-shadow: 0 0 0 2px #f7e7a9, 0 0 30px #f4d65d99; }
+    .rare-particles { position: absolute; z-index: 2; inset: 0; background-image: radial-gradient(circle,#fff 0 2px,transparent 3px),radial-gradient(circle,#f4d65d 0 2px,transparent 3px),radial-gradient(circle,#a8b8ff 0 2px,transparent 3px),radial-gradient(circle,#fff 0 1.5px,transparent 2.5px),radial-gradient(circle,#f4d65d 0 1.5px,transparent 2.5px),radial-gradient(circle,#d4dcff 0 2px,transparent 3px); background-position: 12% 30%,88% 26%,16% 78%,76% 74%,46% 12%,56% 88%; background-repeat: no-repeat; background-size: 0 0; opacity: 0; pointer-events: none; }
+    #reveal-step.rare-reveal.is-revealing .rare-particles { animation: rare-particles .86s cubic-bezier(.16,.76,.35,1) .58s both; }
     @keyframes reveal-card { from { opacity: 0; transform: perspective(600px) rotateY(78deg) scale(.58); } to { opacity: 1; transform: perspective(600px) rotateY(0) scale(1); } }
+    @keyframes rare-aura { 0%,100% { filter: drop-shadow(0 0 0 #f4d65d00); } 42% { filter: drop-shadow(0 0 18px #f4d65dcc); } }
+    @keyframes rare-particles { 0% { opacity: 0; background-size: 0 0; transform: scale(.7); } 35% { opacity: 1; background-size: 42px 42px,48px 48px,36px 36px,30px 30px,34px 34px,40px 40px; transform: scale(1); } 100% { opacity: 0; background-size: 66px 66px,72px 72px,60px 60px,52px 52px,56px 56px,64px 64px; transform: scale(1.12); } }
     .revealed-description { max-width: 230px; margin: 2px 0 0; color: #676a77; font-size: 11px; line-height: 1.45; }
     .last-card-note { margin: 11px 0 0; color: #636ee0; font-size: 11px; font-weight: 700; text-align: center; }
     .toast { position: fixed; z-index: 9; right: 15px; bottom: 16px; left: 15px; width: fit-content; max-width: 390px; margin: auto; padding: 12px 15px; border-radius: 12px; color: #fff; background: #272a36; box-shadow: 0 8px 26px #0003; font-size: 12px; }
@@ -354,6 +371,10 @@
     @media (max-width: 360px) {
       .onboarding-screen { padding: 22px 15px; }
       .setup-add-task { grid-template-columns: minmax(0,1fr) 62px 92px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mystery-card, .revealed-card { transition-duration: .01ms !important; }
+      .card-grid.dealing .mystery-card, .card-grid.shuffling .mystery-card, #reveal-step.is-revealing .revealed-card, #reveal-step.rare-reveal.is-revealing .rare-particles { animation-duration: .01ms !important; animation-delay: 0ms !important; }
     }
   </style>
 </head>
@@ -588,7 +609,7 @@
       <div id="deck-step" hidden>
         <div class="drawn-ribbon" id="deck-ribbon"></div>
         <div class="deck-heading"><button class="back-button" id="deck-back" aria-label="Zpět k balíčkům">‹</button><div><h3 id="deck-title"></h3><p id="deck-description"></p></div></div>
-        <p class="card-prompt">Balíček se otevírá… vyber jednu ze šesti karet.</p>
+        <p class="card-prompt" id="card-prompt">Balíček se otevírá… vyber jednu ze šesti karet.</p>
         <div class="card-grid dealing" id="card-grid">
           <button class="mystery-card" data-card="0" aria-label="Vybrat kartu 1"></button>
           <button class="mystery-card" data-card="1" aria-label="Vybrat kartu 2"></button>
@@ -603,12 +624,14 @@
         <div class="drawn-ribbon" id="reveal-ribbon"></div>
         <div class="reveal-modal-stage">
           <article class="revealed-card">
+            <span class="revealed-rarity" id="revealed-rarity" hidden>✦ VZÁCNÝ NÁLEZ ✦</span>
             <div class="revealed-icon" id="revealed-icon"></div>
             <h3 class="revealed-title" id="revealed-title"></h3>
             <p class="revealed-description" id="revealed-description"></p>
             <div class="revealed-detail" id="revealed-detail"></div>
             <div class="assignee-pill" id="assignee-pill"></div>
           </article>
+          <div class="rare-particles" aria-hidden="true"></div>
         </div>
         <p class="last-card-note" id="last-card-note" hidden>Všechny úkoly jsou vylosované. Přehled se za chvilku aktualizuje.</p>
         <div class="modal-actions reveal-modal-actions" id="reveal-modal-actions">
@@ -673,6 +696,10 @@
     const dayNoun = (count) => count === 1 ? "den" : count >= 2 && count <= 4 ? "dny" : "dní";
     let toastTimer;
     let selectedDifficulty = "";
+    let cardGesture = null;
+    let cardSwipeTimer;
+    let revealAnimationTimer;
+    let suppressCardClick = false;
     let weekOffset = 0;
     let sessionDrawn = [];
     let drawFinishTimer;
@@ -1292,6 +1319,10 @@
       setModalStep("packs");
     }
     function showPacks() {
+      clearTimeout(cardSwipeTimer);
+      cancelCardGesture();
+      $("#card-grid").classList.remove("is-committing", "final-pull");
+      suppressCardClick = false;
       selectedDifficulty = "";
       renderPacks();
     }
@@ -1302,17 +1333,129 @@
       const times = { easy: "do 10 minut", medium: "11–30 minut", hard: "více než 30 minut" };
       $("#deck-title").textContent = `${difficulty[0].toUpperCase()}${difficulty.slice(1)} · ${times[difficulty]}`;
       $("#deck-description").textContent = `V balíčku ${count} ${taskNoun(count)}. Vyber jednu kartu.`;
+      $("#card-prompt").textContent = count === 1
+        ? "Poslední karta v balíčku — potáhni ji o kousek dál nebo klikni."
+        : "Karty se míchají. Klikni nebo potáhni kartu do strany.";
       renderRibbon("#deck-ribbon");
       setModalStep("deck");
       const grid = $("#card-grid");
+      grid.dataset.finalCard = count === 1 ? "true" : "false";
+      grid.classList.toggle("final-pull", count === 1);
+      grid.classList.remove("is-committing");
       grid.classList.remove("dealing");
       void grid.offsetWidth;
       grid.classList.add("dealing");
       setTimeout(() => grid.classList.remove("dealing"), 850);
     }
+    function vibrateFeedback(pattern) {
+      if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") navigator.vibrate(pattern);
+    }
+    function setCardTilt(card, clientX, clientY, rect) {
+      const bounds = rect || card.getBoundingClientRect();
+      const x = Math.max(-1, Math.min(1, ((clientX - bounds.left) / bounds.width - .5) * 2));
+      const y = Math.max(-1, Math.min(1, ((clientY - bounds.top) / bounds.height - .5) * 2));
+      card.style.setProperty("--tilt-x", `${(-y * 10).toFixed(1)}deg`);
+      card.style.setProperty("--tilt-y", `${(x * 13).toFixed(1)}deg`);
+      card.style.setProperty("--glare-x", `${(50 + x * 35).toFixed(1)}%`);
+      card.style.setProperty("--glare-y", `${(50 + y * 35).toFixed(1)}%`);
+      card.style.setProperty("--glare-opacity", `${Math.min(.62, .16 + Math.hypot(x, y) * .22).toFixed(2)}`);
+    }
+    function resetCardMotion(card) {
+      card.style.setProperty("--tilt-x", "0deg");
+      card.style.setProperty("--tilt-y", "0deg");
+      card.style.setProperty("--drag-x", "0px");
+      card.style.setProperty("--drag-y", "0px");
+      card.style.setProperty("--glare-x", "50%");
+      card.style.setProperty("--glare-y", "50%");
+      card.style.setProperty("--glare-opacity", "0");
+    }
+    function cancelCardGesture() {
+      if (!cardGesture) return;
+      cardGesture.card.classList.remove("is-dragging", "is-ready", "is-leaving");
+      resetCardMotion(cardGesture.card);
+      cardGesture = null;
+    }
+    function bindCardPhysics(card) {
+      card.addEventListener("pointerdown", (event) => {
+        if (event.button !== undefined && event.button !== 0) return;
+        if (cardGesture || (card.matches(".mystery-card") && $("#card-grid").classList.contains("is-committing"))) return;
+        const bounds = card.getBoundingClientRect();
+        cardGesture = {
+          card,
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          bounds,
+          threshold: $("#card-grid").dataset.finalCard === "true" ? 112 : 78,
+          thresholdHit: false
+        };
+        if (event.isTrusted && card.setPointerCapture) card.setPointerCapture(event.pointerId);
+        card.classList.add("is-dragging");
+        vibrateFeedback(8);
+      });
+      card.addEventListener("pointermove", (event) => {
+        const gesture = cardGesture && cardGesture.card === card && cardGesture.pointerId === event.pointerId ? cardGesture : null;
+        const bounds = gesture ? gesture.bounds : card.getBoundingClientRect();
+        setCardTilt(card, event.clientX, event.clientY, bounds);
+        if (!gesture) return;
+        const deltaX = event.clientX - gesture.startX;
+        const deltaY = event.clientY - gesture.startY;
+        card.style.setProperty("--drag-x", `${Math.sign(deltaX) * Math.min(Math.abs(deltaX) * .7, 165)}px`);
+        card.style.setProperty("--drag-y", `${Math.sign(deltaY) * Math.min(Math.abs(deltaY) * .38, 34)}px`);
+        card.style.setProperty("--tilt-y", `${Math.max(-18, Math.min(18, deltaX * .14)).toFixed(1)}deg`);
+        card.style.setProperty("--tilt-x", `${Math.max(-14, Math.min(14, -deltaY * .16)).toFixed(1)}deg`);
+        if (!card.matches(".mystery-card")) return;
+        const thresholdHit = Math.abs(deltaX) >= gesture.threshold;
+        card.classList.toggle("is-ready", thresholdHit);
+        if (thresholdHit && !gesture.thresholdHit) vibrateFeedback([12, 18]);
+        gesture.thresholdHit = thresholdHit;
+      });
+      card.addEventListener("pointerup", (event) => {
+        const gesture = cardGesture && cardGesture.card === card && cardGesture.pointerId === event.pointerId ? cardGesture : null;
+        if (!gesture) return;
+        const deltaX = event.clientX - gesture.startX;
+        const deltaY = event.clientY - gesture.startY;
+        const shouldReveal = card.matches(".mystery-card") && Math.abs(deltaX) >= gesture.threshold;
+        cardGesture = null;
+        card.classList.remove("is-dragging");
+        if (event.isTrusted && card.hasPointerCapture && card.hasPointerCapture(event.pointerId)) card.releasePointerCapture(event.pointerId);
+        if (shouldReveal) {
+          card.classList.add("is-leaving");
+          card.style.setProperty("--drag-x", `${Math.sign(deltaX) * 520}px`);
+          card.style.setProperty("--drag-y", `${Math.sign(deltaY) * Math.min(Math.abs(deltaY) * .25, 55)}px`);
+          $("#card-grid").classList.add("is-committing");
+          suppressCardClick = true;
+          vibrateFeedback(26);
+          clearTimeout(cardSwipeTimer);
+          cardSwipeTimer = setTimeout(() => {
+            $("#card-grid").classList.remove("is-committing");
+            card.classList.remove("is-leaving", "is-ready");
+            resetCardMotion(card);
+            suppressCardClick = false;
+            if (selectedDifficulty) drawCard(selectedDifficulty);
+          }, 230);
+        } else {
+          card.classList.remove("is-ready");
+          resetCardMotion(card);
+        }
+      });
+      card.addEventListener("pointercancel", () => {
+        if (!cardGesture || cardGesture.card !== card) return;
+        cardGesture = null;
+        card.classList.remove("is-dragging", "is-ready");
+        resetCardMotion(card);
+      });
+      card.addEventListener("pointerleave", (event) => {
+        if (!cardGesture && event.pointerType === "mouse") resetCardMotion(card);
+      });
+    }
     function openDraw() {
       if (!dueChores().length) { notify("Všechny aktuální úkoly už jsou rozdělené nebo splněné."); return; }
       clearTimeout(drawFinishTimer);
+      clearTimeout(cardSwipeTimer);
+      cancelCardGesture();
+      $("#card-grid").classList.remove("is-committing", "final-pull");
+      suppressCardClick = false;
       sessionDrawn = [];
       $("#draw-modal").hidden = false;
       document.body.style.overflow = "hidden";
@@ -1321,6 +1464,7 @@
     function drawCard(difficulty) {
       const options = dueChores().filter((chore) => chore.difficulty === difficulty);
       if (!options.length) { notify("V této obtížnosti teď žádný úkol nečeká."); return; }
+      const isFinalCard = options.length === 1;
       const chore = options[Math.floor(Math.random() * options.length)];
       const roommate = chooseRoommate(chore);
       chore.history.push(roommate.id);
@@ -1333,8 +1477,17 @@
       $("#revealed-description").textContent = chore.description || "Splň úkol a přidej body celé družině.";
       $("#revealed-detail").textContent = `${difficultyLabel(chore)} · ${chore.durationMin} min · ${chore.points} bodů · ${frequencyLabel(chore.days)}`;
       $("#assignee-pill").textContent = `${roommate.avatar} ${roommate.name}`;
+      const revealStep = $("#reveal-step");
+      revealStep.classList.toggle("rare-reveal", isFinalCard);
+      revealStep.classList.remove("is-revealing");
+      $("#revealed-rarity").hidden = !isFinalCard;
+      if (isFinalCard) vibrateFeedback([18, 30, 42]);
+      clearTimeout(revealAnimationTimer);
       renderRibbon("#reveal-ribbon");
       setModalStep("reveal");
+      void revealStep.offsetWidth;
+      revealStep.classList.add("is-revealing");
+      revealAnimationTimer = setTimeout(() => revealStep.classList.remove("is-revealing"), 1600);
       const remaining = dueChores();
       const hasSame = remaining.some((item) => item.difficulty === difficulty);
       const hasOther = remaining.some((item) => item.difficulty !== difficulty);
@@ -1351,6 +1504,10 @@
     }
     function finalizeDraw() {
       clearTimeout(drawFinishTimer);
+      clearTimeout(cardSwipeTimer);
+      cancelCardGesture();
+      $("#card-grid").classList.remove("is-committing", "final-pull");
+      suppressCardClick = false;
       const count = sessionDrawn.length;
       $("#draw-modal").hidden = true;
       document.body.style.overflow = "";
@@ -1624,7 +1781,13 @@
     document.querySelectorAll("[data-back]").forEach((button) => button.addEventListener("click", () => openScreen(button.dataset.back)));
     document.querySelectorAll(".pack-card").forEach((button) => button.addEventListener("click", () => showDeck(button.dataset.pack)));
     $("#deck-back").addEventListener("click", showPacks);
+    document.querySelectorAll(".mystery-card, .revealed-card").forEach(bindCardPhysics);
     $("#card-grid").addEventListener("click", (event) => {
+      if (suppressCardClick) {
+        event.preventDefault();
+        suppressCardClick = false;
+        return;
+      }
       const card = event.target.closest("[data-card]");
       if (card && selectedDifficulty) drawCard(selectedDifficulty);
     });
