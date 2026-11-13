@@ -1,0 +1,1191 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>Družina doma</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #8496ff;
+      --blue-dark: #6479f5;
+      --blue-soft: #e9edff;
+      --ink: #171820;
+      --muted: #767781;
+      --paper: #fff;
+      --mist: #f3f3f5;
+      --row: #dedee0;
+      --line: #e6e6e9;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #ededf0;
+    }
+
+    * { box-sizing: border-box; }
+    body { min-width: 320px; min-height: 100vh; margin: 0; background: #ededf0; font-size: 14px; }
+    button, select { font: inherit; }
+    button { color: inherit; }
+    .app {
+      position: relative;
+      width: min(100%, 430px);
+      min-height: 100vh;
+      margin: 0 auto;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: 0 0 45px rgba(27,29,44,.08);
+    }
+    .top-progress { height: 34px; display: flex; align-items: center; gap: 9px; padding: 4px 18px 0; background: var(--mist); }
+    .progress-track { min-width: 0; height: 8px; flex: 1; overflow: hidden; border-radius: 99px; background: #c9c9cc; }
+    .progress-fill { width: 0; height: 100%; border-radius: inherit; background: #3d5cf5; transition: width .45s ease; }
+    .help-button { width: 26px; height: 26px; flex: 0 0 26px; display: grid; place-items: center; padding: 0; border: 1px solid #d5d7e3; border-radius: 50%; color: #555b76; background: white; font-size: 15px; font-weight: 800; cursor: pointer; }
+    .help-button:hover { border-color: var(--blue); color: var(--blue-dark); }
+    .household-label { padding: 6px 19px 0; color: #646672; font-size: 10px; font-weight: 800; letter-spacing: .3px; }
+    .crew-strip { display: flex; align-items: center; gap: 13px; padding: 15px 19px 18px; }
+    .avatar-stack { display: flex; align-items: center; padding-left: 5px; }
+    .avatar-chip { width: 40px; height: 40px; display: grid; place-items: center; margin-left: -5px; border: 2px solid white; border-radius: 50%; font-size: 20px; box-shadow: 0 1px 3px #00000014; }
+    .crew-total { min-width: 0; margin-left: auto; color: var(--muted); font-size: 10px; text-align: right; }
+    .crew-total strong { display: block; color: #242630; font-size: 12px; }
+    .settle-button { min-height: 44px; padding: 0 12px; border: 0; border-radius: 15px; color: #171820; background: #dedee0; font-size: 12px; font-weight: 750; cursor: pointer; }
+    .settle-button:hover { background: #d3d3d7; }
+    main { padding: 0 18px 180px; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .week-card { overflow: hidden; border-radius: 22px; background: #ededee; }
+    .week-head { height: 39px; display: grid; grid-template-columns: 39px 1fr 39px; align-items: center; background: #b8b8ba; text-align: center; }
+    .week-head h2 { margin: 0; font-size: 15px; font-weight: 750; }
+    .week-head button { width: 100%; height: 100%; border: 0; background: transparent; font-size: 25px; font-weight: 700; cursor: pointer; }
+    .week-head button:hover { background: #aaaab0; }
+    .week-add { font-size: 23px !important; }
+    .week-list { max-height: 190px; overflow: auto; padding: 7px 9px; scrollbar-width: thin; }
+    .task-row {
+      position: relative;
+      min-height: 43px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 32px;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+      padding: 5px 8px 5px 13px;
+      overflow: hidden;
+      border-radius: 11px;
+      background: var(--row);
+    }
+    .task-row:before { position: absolute; inset: 0 auto 0 0; width: 8px; border-radius: 11px 0 0 11px; background: var(--blue); content: ""; }
+    .task-row:nth-child(3n + 1):before { background: #9c78ff; }
+    .task-row:nth-child(3n + 2):before { background: var(--blue); }
+    .task-copy { min-width: 0; }
+    .task-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px 9px; line-height: 1.3; }
+    .task-name { font-size: 12px; font-weight: 750; }
+    .task-remaining { color: #3e3f46; font-size: 11px; }
+    .task-assignee { color: #5f70e5; font-size: 10px; font-weight: 700; }
+    .task-check {
+      appearance: none;
+      width: 27px;
+      height: 27px;
+      margin: 0;
+      border: 2px solid #fff;
+      border-radius: 7px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .task-check:checked { border-color: var(--blue-dark); background: var(--blue-dark); }
+    .task-check:checked:after { display: block; color: white; content: "✓"; font-size: 18px; font-weight: 800; line-height: 23px; text-align: center; }
+    .task-check:disabled { cursor: default; opacity: .8; }
+    .empty-note { margin: 8px 6px; color: #73747c; font-size: 11px; }
+    .supply-card { margin-top: 15px; overflow: hidden; border-radius: 21px; background: #ededee; }
+    .supply-head { padding: 10px 12px; border-radius: 19px 19px 0 0; background: #b8b8ba; font-size: 14px; font-weight: 800; text-align: center; }
+    .supply-row { display: grid; grid-template-columns: minmax(0,1fr) 32px; align-items: center; gap: 8px; margin: 8px 9px 10px; padding: 7px 8px 7px 13px; border-radius: 10px; background: #dedee0; font-size: 12px; font-weight: 750; }
+    .supply-owner { margin-left: 8px; color: #45464d; font-weight: 450; }
+    .quest-zone { position: relative; min-height: 108px; margin: 17px -18px 0; padding: 14px 18px 0; background: #fff; }
+    .quick-cards { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .quick-card { min-height: 72px; padding: 9px 13px; border-radius: 19px; background: #dedee0; }
+    .quick-icon { font-size: 16px; }
+    .quick-label { margin-top: 3px; font-size: 10px; font-weight: 750; }
+    .quick-value { overflow: hidden; color: #62636d; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .draw-dock { position: fixed; z-index: 6; bottom: 0; left: 50%; width: min(100%, 430px); height: calc(160px + env(safe-area-inset-bottom, 0px)); overflow: hidden; pointer-events: none; transform: translateX(-50%); }
+    .blue-wave { position: absolute; right: -14%; bottom: -31px; left: -14%; height: 105px; border-radius: 52% 52% 0 0 / 40% 40% 0 0; background: var(--blue); }
+    .draw-orb {
+      position: absolute;
+      z-index: 2;
+      bottom: max(4px, env(safe-area-inset-bottom));
+      left: 50%;
+      width: 150px;
+      height: 150px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 9px solid var(--blue);
+      border-radius: 50%;
+      color: #101117;
+      background: white;
+      font-size: 20px;
+      font-weight: 850;
+      line-height: 1.05;
+      text-align: center;
+      transform: translateX(-50%);
+      cursor: pointer;
+      pointer-events: auto;
+      transition: transform .18s, box-shadow .18s;
+    }
+    .draw-orb:hover { box-shadow: 0 5px 20px #334ad833; transform: translateX(-50%) scale(1.025); }
+    .screen-head { display: flex; align-items: center; gap: 11px; margin: 0 -2px 17px; }
+    .back-button { width: 37px; height: 37px; border: 0; border-radius: 12px; background: #ededee; font-size: 21px; cursor: pointer; }
+    .screen-title { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -.5px; }
+    .screen-description { margin: -7px 0 18px; color: var(--muted); font-size: 12px; }
+    .difficulty-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 0 0 20px; }
+    .difficulty-option { padding: 9px 4px; border: 0; border-radius: 99px; color: #44454c; background: #dedee0; font-size: 11px; font-weight: 750; cursor: pointer; }
+    .difficulty-option.active { color: white; background: var(--blue-dark); }
+    .difficulty-option:disabled { opacity: .45; cursor: default; }
+    .difficulty-caption { display: block; margin-top: 2px; font-size: 9px; font-weight: 500; opacity: .8; }
+    .card-prompt { margin: 0 0 17px; font-size: 12px; font-weight: 750; text-align: center; }
+    .card-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; max-width: 300px; margin: 0 auto; }
+    .mystery-card {
+      aspect-ratio: .77;
+      display: grid;
+      place-items: center;
+      border: 3px solid #d5dcff;
+      border-radius: 8px;
+      color: #c5d0ff;
+      background: #8799ff;
+      font-size: 14px;
+      box-shadow: inset 0 0 0 1px #ffffff42;
+      cursor: pointer;
+      transition: transform .16s, filter .16s;
+    }
+    .mystery-card:hover { filter: brightness(1.04); transform: translateY(-3px); }
+    .mystery-card:before { position: absolute; content: "✦"; }
+    .continue-row { margin-top: 18px; text-align: center; }
+    .continue-button { min-width: 112px; padding: 9px 16px; border: 0; border-radius: 99px; color: #fff; background: var(--blue); font-size: 11px; font-weight: 750; cursor: pointer; }
+    .continue-button:hover { background: var(--blue-dark); }
+    .reveal-stage { padding: 21px 17px; border-radius: 22px; background: #f3f4ff; text-align: center; }
+    .revealed-card { width: min(100%,260px); min-height: 230px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; margin: 0 auto; padding: 20px; border: 4px solid #cfd7ff; border-radius: 17px; background: linear-gradient(150deg,#fff,#edf0ff); box-shadow: 0 8px 24px #6175e522; }
+    .revealed-icon { font-size: 49px; }
+    .revealed-title { margin: 4px 0 0; font-size: 18px; font-weight: 850; }
+    .revealed-detail { color: #686a75; font-size: 11px; }
+    .assignee-pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 6px 10px; border-radius: 99px; background: #e6eaff; font-size: 11px; font-weight: 750; }
+    .reveal-actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 9px; margin-top: 18px; }
+    .secondary-button, .primary-button { min-height: 43px; padding: 9px; border: 0; border-radius: 12px; font-size: 12px; font-weight: 750; cursor: pointer; }
+    .secondary-button { background: #ededee; }
+    .primary-button { color: white; background: var(--blue-dark); }
+    .primary-button:hover { background: #4c64eb; }
+    .manage-list { display: grid; gap: 8px; }
+    .manage-row { display: grid; grid-template-columns: 39px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; background: #ededee; }
+    .manage-icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; background: white; font-size: 19px; }
+    .manage-name { font-size: 11px; font-weight: 750; }
+    .manage-points { color: var(--muted); font-size: 10px; }
+    .frequency { max-width: 130px; padding: 8px 5px; border: 1px solid #d9d9de; border-radius: 9px; color: #31323a; background: white; font-size: 10px; }
+    .party-list { display: grid; gap: 9px; }
+    .party-row { display: grid; grid-template-columns: 45px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 12px; border-radius: 15px; background: #ededee; }
+    .party-avatar { width: 43px; height: 43px; display: grid; place-items: center; border-radius: 50%; font-size: 22px; }
+    .party-name { font-weight: 800; }
+    .party-role { color: var(--muted); font-size: 10px; }
+    .party-xp { color: #495fe5; font-size: 12px; font-weight: 800; text-align: right; }
+    .party-bonus { color: #73747c; font-size: 9px; font-weight: 500; }
+    .party-invite-button { width: 100%; margin-top: 12px; }
+    .invite-list { display: grid; gap: 7px; margin-top: 13px; }
+    .invite-summary { padding: 12px; border-radius: 13px; background: #f3f4ff; color: #555762; font-size: 11px; }
+    .invite-summary strong { display: block; margin-bottom: 5px; color: #343643; }
+    .invite-email { overflow-wrap: anywhere; padding-top: 4px; }
+    .modal-backdrop { position: fixed; z-index: 8; inset: 0; display: flex; align-items: center; justify-content: center; padding: 14px; background: rgba(25,27,42,.66); backdrop-filter: blur(5px); }
+    .modal-backdrop[hidden], [hidden] { display: none !important; }
+    .draw-modal { width: min(100%, 400px); max-height: min(94vh, 780px); overflow: auto; padding: 17px; border-radius: 23px; background: white; box-shadow: 0 24px 80px #11152566; animation: modal-in .22s ease-out; }
+    @keyframes modal-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .modal-eyebrow { color: var(--blue-dark); font-size: 9px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+    .modal-title { margin: 2px 0 0; font-size: 21px; font-weight: 850; }
+    .modal-close { width: 35px; height: 35px; flex: 0 0 35px; border: 0; border-radius: 50%; color: #555762; background: #ededee; font-size: 24px; line-height: 1; cursor: pointer; }
+    .modal-copy { margin: 0 0 14px; color: #696b76; font-size: 11px; }
+    .drawn-ribbon { min-height: 42px; display: flex; align-items: center; gap: 6px; margin-bottom: 13px; padding: 6px 8px; overflow-x: auto; border-radius: 12px; background: #f6f9ed; scrollbar-width: thin; }
+    .ribbon-empty { color: #868892; font-size: 10px; }
+    .ribbon-label { flex: 0 0 auto; color: #6b6d77; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+    .ribbon-chip { flex: 0 0 auto; width: 31px; height: 31px; display: grid; place-items: center; border: 1px solid #d5dcff; border-radius: 8px; background: #e6eaff; font-size: 16px; }
+    .pack-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+    .pack-card { min-width: 0; min-height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 9px 5px; border: 2px solid #e6e8f5; border-radius: 15px; background: #fafaff; cursor: pointer; transition: transform .16s, border-color .16s, box-shadow .16s; }
+    .pack-card:hover:not(:disabled) { transform: translateY(-3px); border-color: var(--blue); box-shadow: 0 7px 17px #6479f51f; }
+    .pack-card:disabled { opacity: .43; cursor: default; }
+    .pack-card strong { font-size: 13px; }
+    .pack-card > span:not(.pack-mark) { color: #6d6f79; font-size: 9px; text-align: center; }
+    .pack-mark { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; color: white; background: var(--blue); font-size: 12px; }
+    .pack-card[data-pack="medium"] .pack-mark { background: #758af5; }
+    .pack-card[data-pack="hard"] .pack-mark { background: #9c78e8; }
+    .pack-card small { color: var(--blue-dark); font-size: 9px; font-weight: 750; }
+    .deck-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .deck-heading h3 { margin: 0; font-size: 15px; }
+    .deck-heading p { margin: 2px 0 0; color: #777984; font-size: 10px; }
+    .card-prompt { margin: 0 0 13px; font-size: 11px; font-weight: 750; text-align: center; }
+    .card-grid { width: min(100%, 305px); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin: 0 auto; }
+    .mystery-card { position: relative; aspect-ratio: .78; display: grid; place-items: center; border: 3px solid #cbd4ff; border-radius: 8px; color: #d9e0ff; background: #8799ff; font-size: 13px; cursor: pointer; box-shadow: inset 0 0 0 1px #ffffff42; transition: transform .16s, filter .16s; }
+    .mystery-card:before { content: "✦"; }
+    .mystery-card:hover { z-index: 1; filter: brightness(1.06); transform: translateY(-4px) rotate(-1deg); }
+    .card-grid.dealing .mystery-card { animation: deal-card .55s cubic-bezier(.16,.76,.35,1.15) both; }
+    .card-grid.dealing .mystery-card:nth-child(2) { animation-delay: .05s; }
+    .card-grid.dealing .mystery-card:nth-child(3) { animation-delay: .1s; }
+    .card-grid.dealing .mystery-card:nth-child(4) { animation-delay: .15s; }
+    .card-grid.dealing .mystery-card:nth-child(5) { animation-delay: .2s; }
+    .card-grid.dealing .mystery-card:nth-child(6) { animation-delay: .25s; }
+    @keyframes deal-card { from { opacity: 0; transform: translateY(-25px) rotate(9deg) scale(.8); } to { opacity: 1; transform: none; } }
+    .card-grid.shuffling .mystery-card { animation: shuffle-card .42s ease-in-out both; }
+    .card-grid.shuffling .mystery-card:nth-child(2) { animation-delay: .04s; }
+    .card-grid.shuffling .mystery-card:nth-child(3) { animation-delay: .08s; }
+    .card-grid.shuffling .mystery-card:nth-child(4) { animation-delay: .12s; }
+    .card-grid.shuffling .mystery-card:nth-child(5) { animation-delay: .16s; }
+    .card-grid.shuffling .mystery-card:nth-child(6) { animation-delay: .2s; }
+    @keyframes shuffle-card { 35% { transform: translate(4px,-5px) rotate(5deg) scale(.95); } 70% { transform: translate(-3px,3px) rotate(-4deg); } }
+    .modal-actions { display: flex; justify-content: center; gap: 8px; margin-top: 15px; }
+    .modal-actions button { min-height: 37px; padding: 8px 13px; border-radius: 99px; font-size: 10px; }
+    .modal-actions .secondary-button { border: 0; }
+    .modal-actions .primary-button { border: 0; }
+    .reveal-modal-stage { padding: 13px; border-radius: 18px; background: #f3f4ff; }
+    .reveal-modal-stage .revealed-card { min-height: 270px; }
+    .reveal-modal-stage .revealed-card { animation: reveal-card .68s cubic-bezier(.18,.8,.28,1.2) both; }
+    @keyframes reveal-card { from { opacity: 0; transform: perspective(600px) rotateY(78deg) scale(.58); } to { opacity: 1; transform: perspective(600px) rotateY(0) scale(1); } }
+    .revealed-description { max-width: 230px; margin: 2px 0 0; color: #676a77; font-size: 11px; line-height: 1.45; }
+    .last-card-note { margin: 11px 0 0; color: #636ee0; font-size: 11px; font-weight: 700; text-align: center; }
+    .toast { position: fixed; z-index: 9; right: 15px; bottom: 16px; left: 15px; width: fit-content; max-width: 390px; margin: auto; padding: 12px 15px; border-radius: 12px; color: #fff; background: #272a36; box-shadow: 0 8px 26px #0003; font-size: 12px; }
+    .toast[hidden] { display: none; }
+    .onboarding-backdrop { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 18px; background: #191b2aa8; backdrop-filter: blur(5px); }
+    .onboarding-card { position: relative; width: min(100%, 390px); max-height: 92vh; overflow: auto; padding: 25px 22px 19px; border: 1px solid #eef0fb; border-radius: 25px; background: white; box-shadow: 0 24px 80px #11152566; animation: modal-in .22s ease-out; }
+    .onboarding-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .onboarding-eyebrow { color: var(--blue-dark); font-size: 9px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+    .onboarding-close { width: 34px; height: 34px; border: 0; border-radius: 50%; color: #555762; background: #ededee; font-size: 23px; line-height: 1; cursor: pointer; }
+    .onboarding-progress { display: flex; gap: 5px; margin: 18px 0 22px; }
+    .onboarding-progress span { height: 4px; flex: 1; border-radius: 99px; background: #e8e9ef; }
+    .onboarding-progress span.active { background: var(--blue-dark); }
+    .onboarding-icon { width: 68px; height: 68px; display: grid; place-items: center; margin: 0 auto 15px; border-radius: 22px; background: #eef0ff; font-size: 36px; }
+    .onboarding-title { margin: 0; font-size: 23px; font-weight: 850; letter-spacing: -.5px; line-height: 1.15; text-align: center; }
+    .onboarding-copy { min-height: 72px; margin: 12px 0 22px; color: #666874; font-size: 13px; line-height: 1.6; text-align: center; }
+    .onboarding-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .onboarding-actions { display: flex; align-items: center; gap: 8px; }
+    .onboarding-skip, .onboarding-prev { min-height: 42px; padding: 8px 12px; border: 0; border-radius: 12px; color: #666874; background: transparent; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .onboarding-prev { background: #f0f0f3; }
+    .onboarding-next { min-height: 44px; min-width: 132px; padding: 10px 17px; border: 0; border-radius: 13px; color: white; background: var(--blue-dark); font-size: 12px; font-weight: 800; cursor: pointer; }
+    .onboarding-next:hover { background: #4c64eb; }
+    .onboarding-prev[hidden], .onboarding-skip[hidden] { display: none; }
+    .setup-modal { width: min(100%, 470px); padding: 22px; }
+    .setup-modal .onboarding-progress { margin: 14px 0 18px; }
+    .setup-modal .onboarding-icon { width: 54px; height: 54px; margin-bottom: 11px; border-radius: 17px; font-size: 29px; }
+    .setup-modal .onboarding-title { font-size: 21px; }
+    .setup-modal .onboarding-copy { min-height: 0; margin: 8px 0 15px; font-size: 12px; }
+    .setup-mode-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin: 14px 0; }
+    .setup-mode-card { min-height: 86px; padding: 11px; border: 2px solid #e8e9f2; border-radius: 15px; background: #fafaff; text-align: left; cursor: pointer; }
+    .setup-mode-card.active { border-color: var(--blue-dark); background: #f0f2ff; box-shadow: 0 0 0 2px #8496ff26; }
+    .setup-mode-card strong { display: block; margin: 4px 0; font-size: 12px; }
+    .setup-mode-card span { color: #70717b; font-size: 10px; line-height: 1.4; }
+    .setup-fields { display: grid; gap: 9px; margin: 13px 0 3px; }
+    .setup-field { display: grid; gap: 5px; color: #555762; font-size: 10px; font-weight: 750; }
+    .setup-field input, .setup-field select, .setup-field textarea { width: 100%; min-height: 39px; padding: 9px 10px; border: 1px solid #dfe0e7; border-radius: 10px; color: #252630; background: white; font: inherit; font-size: 12px; }
+    .setup-field textarea { min-height: 90px; resize: vertical; }
+    .setup-step-panel[hidden] { display: none; }
+    .setup-chore-list { display: grid; gap: 8px; max-height: min(34vh, 270px); overflow: auto; padding: 1px 2px 3px 0; }
+    .setup-chore-row { padding: 10px; border: 1px solid #e8e9ef; border-radius: 13px; background: #fafaff; }
+    .setup-chore-top { display: grid; grid-template-columns: 24px minmax(0,1fr); align-items: center; gap: 7px; }
+    .setup-chore-top input { width: 18px; height: 18px; margin: 0; accent-color: var(--blue-dark); }
+    .setup-chore-name { min-width: 0; font-size: 11px; font-weight: 800; }
+    .setup-chore-controls { display: grid; grid-template-columns: 1fr 1.2fr; gap: 8px; margin: 9px 0 0 31px; }
+    .setup-chore-controls .setup-field { font-size: 9px; }
+    .setup-chore-controls input, .setup-chore-controls select { min-height: 34px; padding: 7px; font-size: 10px; }
+    .setup-add-task { display: grid; grid-template-columns: minmax(0,1fr) 76px 105px; align-items: end; gap: 7px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #ececf1; }
+    .setup-add-task .setup-field { font-size: 9px; }
+    .setup-add-task input, .setup-add-task select { min-height: 36px; padding: 7px; font-size: 10px; }
+    .setup-add-task button { grid-column: 1 / -1; min-height: 37px; border: 0; border-radius: 10px; color: #4d5ed0; background: #edf0ff; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .setup-note { margin: 8px 0 0; color: #767781; font-size: 10px; line-height: 1.45; }
+    .setup-time-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin: 15px 0 5px; }
+    .setup-time-option { display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 10px; border: 1px solid #e3e5ee; border-radius: 13px; background: #fafaff; cursor: pointer; }
+    .setup-time-option:has(input:checked) { border-color: var(--blue-dark); background: #f0f2ff; }
+    .setup-time-option input { accent-color: var(--blue-dark); }
+    .setup-time-option strong { display: block; font-size: 12px; }
+    .setup-time-option span { color: #777984; font-size: 9px; }
+    .setup-time-footnote { margin: 8px 0 0; color: #767781; font-size: 10px; line-height: 1.45; }
+    .invite-modal { width: min(100%, 410px); }
+    .invite-mail-link { display: block; margin-top: 11px; padding: 11px; border-radius: 11px; color: white; background: var(--blue-dark); font-size: 12px; font-weight: 800; text-align: center; text-decoration: none; }
+    .invite-mail-link[hidden] { display: none; }
+    .invite-status { margin: 9px 0 0; color: #4f5dbe; font-size: 11px; line-height: 1.4; }
+    @media (min-width: 431px) {
+      .app { min-height: min(920px, 100vh); }
+    }
+    @media (max-height: 760px) {
+      .week-list { max-height: 155px; }
+      .quest-zone { min-height: 108px; }
+      .quick-card { min-height: 74px; }
+    }
+    @media (max-width: 360px) {
+      .onboarding-card { padding: 22px 16px 16px; }
+      .onboarding-footer { gap: 4px; }
+      .onboarding-actions { gap: 4px; }
+      .onboarding-skip, .onboarding-prev { padding: 8px 7px; font-size: 11px; }
+      .onboarding-next { min-width: 110px; padding: 10px 9px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="top-progress">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <button class="help-button" id="help-open" aria-label="Otevřít nastavení družiny" title="Nastavení družiny">?</button>
+      </div>
+      <div class="household-label" id="household-label" hidden></div>
+      <div class="crew-strip">
+        <div class="avatar-stack" id="tiny-avatars"></div>
+        <div class="crew-total"><strong id="cohesion-count"></strong><span>do společné odměny</span></div>
+        <button class="settle-button" id="settle-up">Settle up</button>
+      </div>
+    </header>
+    <main>
+      <section id="home-screen" class="screen active">
+        <section class="week-card">
+          <div class="week-head" style="grid-template-columns:39px 1fr 39px 39px">
+            <button id="week-prev" aria-label="Předchozí týden">‹</button>
+            <h2 id="week-label">Týden 1</h2>
+            <button id="week-next" aria-label="Další týden">›</button>
+            <button class="week-add" id="manage-open" aria-label="Upravit úkoly">+</button>
+          </div>
+          <div id="home-task-list" class="week-list"></div>
+        </section>
+        <section class="supply-card">
+          <div class="supply-head">Chybí / Koupit</div>
+          <div id="supply-list"></div>
+        </section>
+        <section class="quest-zone" aria-label="Losování úkolu">
+          <div class="quick-cards">
+            <article class="quick-card"><div class="quick-icon">✦</div><div class="quick-label">Společný quest</div><div class="quick-value" id="quick-cohesion"></div></article>
+            <article class="quick-card"><div class="quick-icon">🃏</div><div class="quick-label">Čekající úkoly</div><div class="quick-value" id="quick-tasks"></div></article>
+          </div>
+        </section>
+        <div class="draw-dock" aria-label="Losování úkolu">
+          <div class="blue-wave"></div>
+          <button class="draw-orb" id="draw-open">Losovat<br>úkol</button>
+        </div>
+      </section>
+
+      <section id="manage-screen" class="screen">
+        <div class="screen-head"><button class="back-button" data-back="home" aria-label="Zpět">‹</button><h1 class="screen-title">Upravit úkoly</h1></div>
+        <p class="screen-description">Změň, jak často se mají domácí úkoly vracet.</p>
+        <div class="manage-list" id="manage-task-list"></div>
+      </section>
+
+      <section id="party-screen" class="screen">
+        <div class="screen-head"><button class="back-button" data-back="home" aria-label="Zpět">‹</button><h1 class="screen-title">Tvoje družina</h1></div>
+        <p class="screen-description">Společná odměna čeká při každých 100 bodech sounáležitosti.</p>
+        <div class="party-list" id="party-list"></div>
+        <div class="invite-list" id="invite-list"></div>
+        <button class="primary-button party-invite-button" id="party-invite-open">Přistěhovat elfy · pozvat e-mailem</button>
+      </section>
+    </main>
+  </div>
+  <div class="onboarding-backdrop" id="onboarding-modal" hidden>
+    <section class="onboarding-card setup-modal" role="dialog" aria-modal="true" aria-labelledby="onboarding-title" aria-describedby="onboarding-copy">
+      <div class="onboarding-top">
+        <div class="onboarding-eyebrow">Vytvoření družiny · <span id="onboarding-step-label">Krok 1 ze 3</span></div>
+        <button class="onboarding-close" id="onboarding-close" aria-label="Zavřít nastavení">×</button>
+      </div>
+      <div class="onboarding-progress" id="onboarding-progress" aria-hidden="true"></div>
+      <div class="onboarding-icon" id="onboarding-icon" aria-hidden="true"></div>
+      <h2 class="onboarding-title" id="onboarding-title"></h2>
+      <p class="onboarding-copy" id="onboarding-copy"></p>
+      <div class="setup-step-panel" data-setup-step="0">
+        <div class="setup-mode-grid">
+          <button class="setup-mode-card" type="button" data-household-mode="create">
+            <strong>🏡 Založit novou partu</strong>
+            <span>Vytvoř družinu pro svou domácnost.</span>
+          </button>
+          <button class="setup-mode-card" type="button" data-household-mode="join">
+            <strong>🗝️ Už mám pozvánku</strong>
+            <span>Připoj se k existující družině.</span>
+          </button>
+        </div>
+        <div class="setup-fields" id="create-fields" hidden>
+          <label class="setup-field">Jak se bude tvoje parta jmenovat?
+            <input id="setup-household-name" maxlength="48" placeholder="např. Družina domácího krbu">
+          </label>
+          <label class="setup-field">Jak ti máme říkat?
+            <input id="setup-player-name" maxlength="32" placeholder="Tvoje jméno">
+          </label>
+        </div>
+        <div class="setup-fields" id="join-fields" hidden>
+          <label class="setup-field">Tvůj zvací kód
+            <input id="setup-invite-code" maxlength="32" autocomplete="off" placeholder="např. ELF-7K2P">
+          </label>
+          <label class="setup-field">Jak ti máme říkat?
+            <input id="setup-join-name" maxlength="32" placeholder="Tvoje jméno">
+          </label>
+          <p class="setup-note">Připojení ke skutečné sdílené družině vyžaduje server; v tomto prototypu uvidíš ukázkovou partu.</p>
+        </div>
+      </div>
+      <div class="setup-step-panel" id="setup-chores-step" data-setup-step="1" hidden>
+        <div class="setup-chore-list" id="setup-chore-list"></div>
+        <div class="setup-add-task">
+          <label class="setup-field">Nový úkol
+            <input id="new-task-name" maxlength="48" placeholder="např. Vynést koš">
+          </label>
+          <label class="setup-field">Minuty
+            <input id="new-task-duration" type="number" min="1" max="600" value="15">
+          </label>
+          <label class="setup-field">Frekvence
+            <select id="new-task-frequency"></select>
+          </label>
+          <button type="button" id="add-setup-task">＋ Přidat úkol do nabídky</button>
+        </div>
+      </div>
+      <div class="setup-step-panel" id="setup-time-step" data-setup-step="2" hidden>
+        <div class="setup-time-grid">
+          <label class="setup-time-option"><input type="radio" name="weekly-time" value="15"><span><strong>15 minut</strong><span>Rychlá výprava</span></span></label>
+          <label class="setup-time-option"><input type="radio" name="weekly-time" value="30"><span><strong>30 minut</strong><span>Lehký úklid</span></span></label>
+          <label class="setup-time-option"><input type="radio" name="weekly-time" value="60"><span><strong>1 hodina</strong><span>Tak akorát</span></span></label>
+          <label class="setup-time-option"><input type="radio" name="weekly-time" value="120"><span><strong>2+ hodiny</strong><span>Jsem připraven/a</span></span></label>
+        </div>
+        <p class="setup-time-footnote">Je to tvůj týdenní časový rozpočet. Pomůže družině vybrat přiměřený balíček — kdykoli ho můžeš změnit.</p>
+      </div>
+      <div class="onboarding-footer">
+        <button class="onboarding-skip" id="onboarding-skip">Později</button>
+        <div class="onboarding-actions">
+          <button class="onboarding-prev" id="onboarding-prev">Zpět</button>
+          <button class="onboarding-next" id="onboarding-next">Pokračovat</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="invite-modal" hidden>
+    <section class="draw-modal invite-modal" role="dialog" aria-modal="true" aria-labelledby="invite-title">
+      <header class="modal-head">
+        <div><div class="modal-eyebrow">Poslední krok</div><h2 class="modal-title" id="invite-title">Přistěhuj si elfy</h2></div>
+        <button class="modal-close" id="invite-close" aria-label="Zavřít pozvánky">×</button>
+      </header>
+      <p class="modal-copy">Pozvi spolubydlící do družiny. V prototypu se připraví zpráva v tvém e-mailovém programu — odeslání potvrdíš tam.</p>
+      <label class="setup-field">E-mailové adresy
+        <textarea id="invite-emails" placeholder="elf@domena.cz&#10;dalsi@domena.cz"></textarea>
+      </label>
+      <button class="primary-button" id="prepare-invites" style="width:100%;margin-top:10px">Připravit pozvánky</button>
+      <p class="invite-status" id="invite-status" hidden></p>
+      <a class="invite-mail-link" id="invite-mail-link" href="#" hidden>Otevřít e-mailovou aplikaci</a>
+      <button class="secondary-button" id="invite-done" style="width:100%;margin-top:10px">Přejít na nástěnku</button>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="draw-modal" hidden>
+    <section class="draw-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <header class="modal-head">
+        <div><div class="modal-eyebrow">Domácí výprava</div><h2 class="modal-title" id="modal-title">Losování úkolů</h2></div>
+        <button class="modal-close" id="close-draw" aria-label="Zavřít losování">×</button>
+      </header>
+      <div id="pack-step">
+        <div class="drawn-ribbon" id="pack-ribbon"></div>
+        <p class="modal-copy">Nejdřív si vyber časovou obtížnost. Každý balíček obsahuje úkoly, které čekají na los.</p>
+        <div class="pack-grid">
+          <button class="pack-card" data-pack="easy">
+            <span class="pack-mark">✦</span><strong>Easy</strong><span>do 10 minut</span><small data-pack-count="easy"></small>
+          </button>
+          <button class="pack-card" data-pack="medium">
+            <span class="pack-mark">✦✦</span><strong>Medium</strong><span>11–30 minut</span><small data-pack-count="medium"></small>
+          </button>
+          <button class="pack-card" data-pack="hard">
+            <span class="pack-mark">✦✦✦</span><strong>Hard</strong><span>více než 30 minut</span><small data-pack-count="hard"></small>
+          </button>
+        </div>
+      </div>
+      <div id="deck-step" hidden>
+        <div class="drawn-ribbon" id="deck-ribbon"></div>
+        <div class="deck-heading"><button class="back-button" id="deck-back" aria-label="Zpět k balíčkům">‹</button><div><h3 id="deck-title"></h3><p id="deck-description"></p></div></div>
+        <p class="card-prompt">Balíček se otevírá… vyber jednu ze šesti karet.</p>
+        <div class="card-grid dealing" id="card-grid">
+          <button class="mystery-card" data-card="0" aria-label="Vybrat kartu 1"></button>
+          <button class="mystery-card" data-card="1" aria-label="Vybrat kartu 2"></button>
+          <button class="mystery-card" data-card="2" aria-label="Vybrat kartu 3"></button>
+          <button class="mystery-card" data-card="3" aria-label="Vybrat kartu 4"></button>
+          <button class="mystery-card" data-card="4" aria-label="Vybrat kartu 5"></button>
+          <button class="mystery-card" data-card="5" aria-label="Vybrat kartu 6"></button>
+        </div>
+        <div class="modal-actions"><button class="secondary-button" id="shuffle-again">⟳ Zamíchat znovu</button></div>
+      </div>
+      <div id="reveal-step" hidden>
+        <div class="drawn-ribbon" id="reveal-ribbon"></div>
+        <div class="reveal-modal-stage">
+          <article class="revealed-card">
+            <div class="revealed-icon" id="revealed-icon"></div>
+            <h3 class="revealed-title" id="revealed-title"></h3>
+            <p class="revealed-description" id="revealed-description"></p>
+            <div class="revealed-detail" id="revealed-detail"></div>
+            <div class="assignee-pill" id="assignee-pill"></div>
+          </article>
+        </div>
+        <p class="last-card-note" id="last-card-note" hidden>Všechny úkoly jsou vylosované. Přehled se za chvilku aktualizuje.</p>
+        <div class="modal-actions reveal-modal-actions" id="reveal-modal-actions">
+          <button class="secondary-button" id="choose-pack-button" hidden>Jiný balíček</button>
+          <button class="primary-button" id="draw-again-button" hidden>Losovat znovu</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script>
+    const STORAGE_KEY = "druzina-doma-v1";
+    const SETUP_KEY = "druzina-doma-setup-v2";
+    const frequencies = [
+      { days: 3, label: "Každé 3 dny" },
+      { days: 7, label: "1× týdně" },
+      { days: 14, label: "1× za 2 týdny" },
+      { days: 30, label: "1× měsíčně" },
+      { days: 180, label: "1× za půl roku" }
+    ];
+    const seed = {
+      cohesion: 68,
+      level: 1,
+      roommates: [
+        { id: "ema", name: "Ema", avatar: "🧙🏻‍♀️", role: "Čarodějka pořádku", color: "#e9e3ff", points: 34, bonuses: 0 },
+        { id: "maty", name: "Maty", avatar: "🧝🏻‍♂️", role: "Elfický vysavač", color: "#dff3ea", points: 27, bonuses: 0 },
+        { id: "hanka", name: "Hanka", avatar: "🧚🏻‍♀️", role: "Víla kuchyně", color: "#ffe8ed", points: 41, bonuses: 0 },
+        { id: "adam", name: "Adam", avatar: "🧌", role: "Strážce oken", color: "#e5eaff", points: 19, bonuses: 0 }
+      ],
+      chores: [
+        { id: "kuchyne", name: "Uklidit kuchyň", icon: "🍳", days: 3, points: 12, durationMin: 15, description: "Otři linku a varnou desku, ukliď nádobí a vrať věci na místo.", lastCompleted: "2026-11-10", history: ["ema", "maty"] },
+        { id: "koupelna", name: "Vydrhnout koupelnu", icon: "🫧", days: 7, points: 18, durationMin: 30, description: "Umyj umyvadlo, sprchu, zrcadlo a toaletu. Doplň mýdlo.", lastCompleted: "2026-11-06", history: ["hanka", "adam"] },
+        { id: "vysat", name: "Vysát celý byt", icon: "🧹", days: 7, points: 14, durationMin: 20, description: "Vysaj všechny pokoje včetně rohů a míst pod stolem.", lastCompleted: "2026-11-06", history: ["maty", "ema"] },
+        { id: "recyklace", name: "Vynést tříděný odpad", icon: "♻️", days: 7, points: 8, durationMin: 5, description: "Vezmi papír, plast a sklo do správných kontejnerů.", lastCompleted: "2026-11-05", history: ["adam", "hanka"] },
+        { id: "okna", name: "Umýt okna", icon: "🪟", days: 180, points: 25, durationMin: 60, description: "Umyj okna zevnitř i zvenku a vylešti rámy.", lastCompleted: "2026-05-15", history: ["ema", "hanka"] },
+        { id: "kytky", name: "Zalít kytky", icon: "🪴", days: 7, points: 6, durationMin: 5, description: "Zkontroluj zeminu a zalij všechny pokojové rostliny.", lastCompleted: "2026-11-06", history: ["maty", "adam"] },
+        { id: "podlaha", name: "Vytřít podlahu", icon: "🧽", days: 14, points: 16, durationMin: 20, description: "Vytři kuchyň a chodbu, na závěr opláchni mop.", lastCompleted: "2026-10-30", history: ["hanka", "ema"] }
+      ],
+      supplies: [{ id: "toaletak", name: "Toaleťák", owner: "všichni", bought: false }],
+      assignments: [],
+      deckOrder: [],
+      invites: []
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const clone = (value) => JSON.parse(JSON.stringify(value));
+    const byId = (id) => state.roommates.find((person) => person.id === id);
+    const todayISO = () => {
+      const date = new Date();
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    };
+    const dayGap = (a, b) => Math.floor((Date.parse(`${b}T12:00:00`) - Date.parse(`${a}T12:00:00`)) / 86400000);
+    const isDue = (chore) => dayGap(chore.lastCompleted, todayISO()) >= Number(chore.days);
+    const dueChores = () => state.chores.filter((chore) => isDue(chore) && !state.assignments.some((assignment) => assignment.choreId === chore.id));
+    const frequencyLabel = (days) => (frequencies.find((item) => item.days === Number(days)) || { label: `1× za ${days} dní` }).label;
+    const taskNoun = (count) => count === 1 ? "úkol" : count >= 2 && count <= 4 ? "úkoly" : "úkolů";
+    const dayNoun = (count) => count === 1 ? "den" : count >= 2 && count <= 4 ? "dny" : "dní";
+    let toastTimer;
+    let selectedDifficulty = "";
+    let weekOffset = 0;
+    let sessionDrawn = [];
+    let drawFinishTimer;
+    let onboardingIndex = 0;
+    let onboardingReturnFocus = null;
+    let inviteReturnFocus = null;
+    let setupMode = "";
+    let setupTimeMinutes = 60;
+    let setupChores = [];
+    const setupSteps = [
+      {
+        icon: "🏰",
+        title: "Vítej ve světě společného úklidu",
+        copy: "Tvoje domácnost je družina. Vyber, jestli zakládáš novou partu, nebo už máš pozvánku od ostatních."
+      },
+      {
+        icon: "📜",
+        title: "Co je potřeba udělat?",
+        copy: "Zaškrtni úkoly, které chcete losovat. U každého můžeš upravit časovou náročnost i to, jak často se má vracet."
+      },
+      {
+        icon: "⏳",
+        title: "Kolik času máš na výpravu?",
+        copy: "Nastav si týdenní čas, který můžeš věnovat úklidu. Potom se přeneseme na nástěnku a můžeš přizvat ostatní elfy."
+      }
+    ];
+
+    function shiftDate(date, offset) {
+      const shifted = new Date(`${date}T12:00:00`);
+      shifted.setDate(shifted.getDate() + offset);
+      return `${shifted.getFullYear()}-${String(shifted.getMonth() + 1).padStart(2, "0")}-${String(shifted.getDate()).padStart(2, "0")}`;
+    }
+    function selectedWeekDates() {
+      const today = new Date(`${todayISO()}T12:00:00`);
+      const mondayOffset = (today.getDay() + 6) % 7;
+      const monday = shiftDate(todayISO(), -mondayOffset + weekOffset * 7);
+      return { start: monday, end: shiftDate(monday, 6) };
+    }
+    function dueThisWeek(chore) {
+      const { end } = selectedWeekDates();
+      return dayGap(chore.lastCompleted, end) >= Number(chore.days);
+    }
+
+    function normalizeState(parsed) {
+      const durationDefaults = { kuchyne: 15, koupelna: 30, vysat: 20, recyklace: 5, okna: 60, kytky: 5, podlaha: 20 };
+      const newSamples = clone(seed.chores).filter((sample) => !parsed.chores.some((chore) => chore.id === sample.id));
+      parsed.chores.push(...newSamples);
+      parsed.chores.forEach((chore) => {
+        if (!Array.isArray(chore.history)) chore.history = [];
+        if (!Number.isFinite(chore.durationMin)) chore.durationMin = durationDefaults[chore.id] || (chore.points <= 12 ? 10 : chore.points <= 18 ? 25 : 45);
+        chore.difficulty = chore.durationMin <= 10 ? "easy" : chore.durationMin <= 30 ? "medium" : "hard";
+      });
+      if (!Array.isArray(parsed.assignments)) parsed.assignments = [];
+      if (parsed.currentCard && parsed.currentCard.choreId && parsed.currentCard.roommateId) {
+        parsed.assignments.push({ choreId: parsed.currentCard.choreId, roommateId: parsed.currentCard.roommateId, assignedAt: todayISO() });
+        parsed.currentCard = null;
+      }
+      parsed.assignments = parsed.assignments.filter((assignment) =>
+        parsed.chores.some((chore) => chore.id === assignment.choreId) &&
+        parsed.roommates.some((person) => person.id === assignment.roommateId)
+      );
+      if (!Array.isArray(parsed.supplies)) parsed.supplies = clone(seed.supplies);
+      if (!Array.isArray(parsed.deckOrder)) parsed.deckOrder = [];
+      if (!Array.isArray(parsed.invites)) parsed.invites = [];
+      if (typeof parsed.householdName !== "string") parsed.householdName = "";
+      if (!Number.isFinite(parsed.myWeeklyMinutes)) parsed.myWeeklyMinutes = 60;
+      if (typeof parsed.level !== "number") parsed.level = Math.floor(parsed.cohesion / 100) + 1;
+      return parsed;
+    }
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return normalizeState(clone(seed));
+        const parsed = JSON.parse(saved);
+        if (!Array.isArray(parsed.roommates) || !Array.isArray(parsed.chores)) return normalizeState(clone(seed));
+        return normalizeState(parsed);
+      } catch (error) {
+        console.warn("Uložený stav se nepodařilo načíst; používají se ukázková data.", error);
+        return normalizeState(clone(seed));
+      }
+    }
+    let state = loadState();
+
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        return true;
+      } catch (error) {
+        notify("Změnu se nepodařilo uložit.");
+        console.error("Uložení stavu selhalo.", error);
+        return false;
+      }
+    }
+    function shouldAutoOpenOnboarding() {
+      try {
+        return !localStorage.getItem(STORAGE_KEY) && !localStorage.getItem(SETUP_KEY);
+      } catch (error) {
+        console.warn("Stav úvodního nastavení se nepodařilo načíst.", error);
+        return false;
+      }
+    }
+    function renderSetupChores() {
+      $("#setup-chore-list").innerHTML = setupChores.map((chore) => `
+        <article class="setup-chore-row">
+          <label class="setup-chore-top">
+            <input type="checkbox" class="setup-enabled" data-chore-id="${escapeHTML(chore.id)}" ${chore.enabled ? "checked" : ""}>
+            <span class="setup-chore-name">${chore.icon} ${escapeHTML(chore.name)}</span>
+          </label>
+          <div class="setup-chore-controls">
+            <label class="setup-field">Čas v minutách
+              <input type="number" class="setup-duration" data-chore-id="${escapeHTML(chore.id)}" min="1" max="600" value="${Number(chore.durationMin) || 10}">
+            </label>
+            <label class="setup-field">Opakovat
+              <select class="setup-frequency" data-chore-id="${escapeHTML(chore.id)}">${frequencies.map((frequency) =>
+                `<option value="${frequency.days}" ${Number(chore.days) === frequency.days ? "selected" : ""}>${frequency.label}</option>`
+              ).join("")}</select>
+            </label>
+          </div>
+        </article>`).join("");
+    }
+    function updateSetupMode(mode) {
+      setupMode = mode;
+      document.querySelectorAll("[data-household-mode]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.householdMode === mode);
+      });
+      $("#create-fields").hidden = mode !== "create";
+      $("#join-fields").hidden = mode !== "join";
+    }
+    function renderOnboarding() {
+      const step = setupSteps[onboardingIndex];
+      $("#onboarding-step-label").textContent = `Krok ${onboardingIndex + 1} ze ${setupSteps.length}`;
+      $("#onboarding-icon").textContent = step.icon;
+      $("#onboarding-title").textContent = step.title;
+      $("#onboarding-copy").textContent = step.copy;
+      $("#onboarding-progress").innerHTML = setupSteps.map((_, index) =>
+        `<span class="${index <= onboardingIndex ? "active" : ""}"></span>`
+      ).join("");
+      document.querySelectorAll("[data-setup-step]").forEach((panel) => {
+        panel.hidden = Number(panel.dataset.setupStep) !== onboardingIndex;
+      });
+      $("#onboarding-prev").hidden = onboardingIndex === 0;
+      $("#onboarding-next").textContent = onboardingIndex === setupSteps.length - 1 ? "Jdeme uklízet" : "Pokračovat";
+    }
+    function openOnboarding() {
+      onboardingReturnFocus = document.activeElement;
+      onboardingIndex = 0;
+      setupMode = "";
+      setupTimeMinutes = Number(state.myWeeklyMinutes) || 60;
+      setupChores = state.chores.map((chore) => ({ ...clone(chore), enabled: true }));
+      $("#setup-household-name").value = state.householdName || "";
+      $("#setup-player-name").value = "";
+      $("#setup-join-name").value = "";
+      $("#setup-invite-code").value = "";
+      $("#new-task-name").value = "";
+      $("#new-task-duration").value = "15";
+      $("#new-task-frequency").innerHTML = frequencies.map((frequency) =>
+        `<option value="${frequency.days}">${frequency.label}</option>`
+      ).join("");
+      $("#new-task-frequency").value = "7";
+      document.querySelectorAll('input[name="weekly-time"]').forEach((radio) => {
+        radio.checked = Number(radio.value) === setupTimeMinutes;
+      });
+      updateSetupMode("");
+      renderSetupChores();
+      renderOnboarding();
+      $("#onboarding-modal").hidden = false;
+      document.body.style.overflow = "hidden";
+      $("#onboarding-next").focus();
+    }
+    function closeOnboarding() {
+      $("#onboarding-modal").hidden = true;
+      document.body.style.overflow = "";
+      if (onboardingReturnFocus && onboardingReturnFocus.isConnected) onboardingReturnFocus.focus();
+    }
+    function validateSetupStep() {
+      if (onboardingIndex === 0) {
+        if (!setupMode) { notify("Vyber, jestli zakládáš partu, nebo se připojuješ."); return false; }
+        const name = (setupMode === "create" ? $("#setup-player-name") : $("#setup-join-name")).value.trim();
+        if (!name) { notify("Doplň své jméno, ať tě družina pozná."); return false; }
+        if (setupMode === "create" && !$("#setup-household-name").value.trim()) {
+          notify("Pojmenuj svou družinu.");
+          return false;
+        }
+        if (setupMode === "join" && !$("#setup-invite-code").value.trim()) {
+          notify("Zadej zvací kód od své party.");
+          return false;
+        }
+      }
+      if (onboardingIndex === 1) {
+        if (!setupChores.some((chore) => chore.enabled)) {
+          notify("Vyber aspoň jeden úkol, který se bude losovat.");
+          return false;
+        }
+        if (setupChores.some((chore) => chore.enabled && (!Number.isFinite(Number(chore.durationMin)) || Number(chore.durationMin) < 1))) {
+          notify("U každého vybraného úkolu nastav platný čas v minutách.");
+          return false;
+        }
+      }
+      if (onboardingIndex === 2 && !document.querySelector('input[name="weekly-time"]:checked')) {
+        notify("Vyber, kolik času můžeš úklidu věnovat.");
+        return false;
+      }
+      return true;
+    }
+    function addSetupChore() {
+      const name = $("#new-task-name").value.trim();
+      const durationMin = Number($("#new-task-duration").value);
+      const days = Number($("#new-task-frequency").value);
+      if (!name) { notify("Napiš název nového úkolu."); return; }
+      if (!Number.isFinite(durationMin) || durationMin < 1 || durationMin > 600) {
+        notify("Čas úkolu musí být mezi 1 a 600 minutami.");
+        return;
+      }
+      if (setupChores.some((chore) => chore.name.toLocaleLowerCase("cs") === name.toLocaleLowerCase("cs"))) {
+        notify("Takový úkol už v nabídce je.");
+        return;
+      }
+      const slug = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      setupChores.push({
+        id: `custom-${slug || "ukol"}-${Date.now()}`,
+        name,
+        icon: "✨",
+        days,
+        points: durationMin <= 10 ? 6 : durationMin <= 30 ? 12 : 20,
+        durationMin,
+        description: `Splň domácí úkol: ${name}.`,
+        lastCompleted: shiftDate(todayISO(), -days),
+        history: [],
+        enabled: true
+      });
+      renderSetupChores();
+      $("#new-task-name").value = "";
+      notify(`Úkol „${name}“ je v nabídce.`);
+    }
+    function finishOnboarding() {
+      const selectedChores = setupChores.filter((chore) => chore.enabled).map((source) => {
+        const chore = clone(source);
+        chore.days = Number(chore.days);
+        chore.durationMin = Number(chore.durationMin);
+        chore.difficulty = chore.durationMin <= 10 ? "easy" : chore.durationMin <= 30 ? "medium" : "hard";
+        if (setupMode === "create") {
+          chore.history = [];
+          chore.lastCompleted = shiftDate(todayISO(), -chore.days);
+        }
+        delete chore.enabled;
+        return chore;
+      });
+      const playerName = (setupMode === "create" ? $("#setup-player-name") : $("#setup-join-name")).value.trim();
+      state.chores = selectedChores;
+      state.assignments = state.assignments.filter((assignment) =>
+        selectedChores.some((chore) => chore.id === assignment.choreId)
+      );
+      state.myWeeklyMinutes = setupTimeMinutes;
+      if (setupMode === "create") {
+        state.householdName = $("#setup-household-name").value.trim();
+        state.roommates = [{
+          id: "me",
+          name: playerName,
+          avatar: "🧙🏻‍♀️",
+          role: "Zakladatel družiny",
+          color: "#e9e3ff",
+          points: 0,
+          bonuses: 0
+        }];
+        state.cohesion = 0;
+        state.level = 1;
+        state.assignments = [];
+        state.supplies = [];
+        state.invites = [];
+        state.inviteCode = `ELF-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+      } else {
+        const existingMember = state.roommates.find((person) => person.name.toLocaleLowerCase("cs") === playerName.toLocaleLowerCase("cs"));
+        if (!existingMember) {
+          state.roommates.push({
+            id: `member-${Date.now()}`,
+            name: playerName,
+            avatar: "🧝🏻‍♂️",
+            role: "Nový elf v družině",
+            color: "#dff3ea",
+            points: 0,
+            bonuses: 0
+          });
+        }
+        state.householdName = state.householdName || "Ukázková družina";
+        state.inviteCode = $("#setup-invite-code").value.trim().toUpperCase();
+      }
+      if (!save()) return;
+      try { localStorage.setItem(SETUP_KEY, "done"); }
+      catch (error) { console.warn("Dokončení nastavení se nepodařilo uložit.", error); }
+      $("#onboarding-modal").hidden = true;
+      document.body.style.overflow = "";
+      render();
+      openScreen("home");
+      window.setTimeout(openInviteModal, 250);
+    }
+    function openInviteModal() {
+      const activeScreen = document.querySelector(".screen.active");
+      inviteReturnFocus = activeScreen && activeScreen.id === "party-screen" ? $("#party-invite-open") : $("#draw-open");
+      $("#invite-emails").value = "";
+      $("#invite-status").hidden = true;
+      $("#invite-mail-link").hidden = true;
+      $("#invite-modal").hidden = false;
+      document.body.style.overflow = "hidden";
+      $("#invite-emails").focus();
+    }
+    function closeInviteModal() {
+      $("#invite-modal").hidden = true;
+      document.body.style.overflow = "";
+      if (inviteReturnFocus && inviteReturnFocus.isConnected) inviteReturnFocus.focus();
+    }
+    function prepareInvites() {
+      const entries = $("#invite-emails").value.split(/[\s,;]+/).filter(Boolean);
+      if (!entries.length) { notify("Zadej aspoň jeden e-mail."); return; }
+      const invalid = entries.filter((email) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+      if (invalid.length) { notify(`Zkontroluj e-mail: ${invalid[0]}`); return; }
+      const unique = [...new Set(entries.map((email) => email.toLowerCase()))];
+      const existing = new Set(state.invites.map((invite) => invite.email.toLowerCase()));
+      unique.filter((email) => !existing.has(email)).forEach((email) => state.invites.push({ email, status: "prepared", preparedAt: todayISO() }));
+      const recipients = unique.map((email) => encodeURIComponent(email)).join(",");
+      const subject = `Přidej se do družiny ${state.householdName || "Družina doma"}`;
+      const body = `Ahoj! Přidej se do naší družiny ${state.householdName || "Družina doma"}. V aplikaci vyber „Už mám pozvánku“ a zadej zvací kód ${state.inviteCode || "—"}.`;
+      $("#invite-mail-link").href = `mailto:${recipients}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      if (!save()) return;
+      const preparedText = unique.length === 1
+        ? "Připravena 1 e-mailová adresa k pozvání."
+        : unique.length < 5
+          ? `Připraveny ${unique.length} e-mailové adresy k pozvání.`
+          : `Připraveno ${unique.length} e-mailových adres k pozvání.`;
+      $("#invite-status").textContent = `${preparedText} E-mail odešli ve svém poštovním programu.`;
+      $("#invite-status").hidden = false;
+      $("#invite-mail-link").hidden = false;
+      renderParty();
+    }
+    function notify(message) {
+      const toast = $("#toast");
+      toast.textContent = message;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
+    }
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+    function chooseRoommate(chore) {
+      const previous = chore.history[chore.history.length - 1];
+      let candidates = state.roommates.filter((person) => person.id !== previous);
+      if (!candidates.length) candidates = state.roommates;
+      const counts = Object.fromEntries(state.roommates.map((person) => [person.id, chore.history.filter((id) => id === person.id).length]));
+      const leastAssigned = Math.min(...candidates.map((person) => counts[person.id]));
+      candidates = candidates.filter((person) => counts[person.id] === leastAssigned);
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    }
+    function difficultyLabel(chore) {
+      return chore.durationMin <= 10 ? "Easy" : chore.durationMin <= 30 ? "Medium" : "Hard";
+    }
+    function openScreen(name) {
+      document.querySelectorAll(".screen").forEach((screen) => screen.classList.toggle("active", screen.id === `${name}-screen`));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    function setModalStep(step) {
+      $("#pack-step").hidden = step !== "packs";
+      $("#deck-step").hidden = step !== "deck";
+      $("#reveal-step").hidden = step !== "reveal";
+    }
+    function renderRibbon(selector) {
+      const ribbon = $(selector);
+      if (!sessionDrawn.length) {
+        ribbon.innerHTML = '<span class="ribbon-empty">Vylosované karty se objeví tady</span>';
+        return;
+      }
+      ribbon.innerHTML = `<span class="ribbon-label">Vylosováno</span>${sessionDrawn.map((item) => `<span class="ribbon-chip" title="${escapeHTML(item.name)} · ${escapeHTML(item.roommateName)}">${item.icon}</span>`).join("")}`;
+    }
+    function renderPacks() {
+      const counts = { easy: 0, medium: 0, hard: 0 };
+      dueChores().forEach((chore) => { counts[chore.difficulty] += 1; });
+      document.querySelectorAll(".pack-card").forEach((button) => {
+        const count = counts[button.dataset.pack] || 0;
+        button.disabled = count === 0;
+        button.querySelector("[data-pack-count]").textContent = `${count} ${taskNoun(count)}`;
+      });
+      renderRibbon("#pack-ribbon");
+      setModalStep("packs");
+    }
+    function showPacks() {
+      selectedDifficulty = "";
+      renderPacks();
+    }
+    function showDeck(difficulty) {
+      const count = dueChores().filter((chore) => chore.difficulty === difficulty).length;
+      if (!count) { showPacks(); return; }
+      selectedDifficulty = difficulty;
+      const times = { easy: "do 10 minut", medium: "11–30 minut", hard: "více než 30 minut" };
+      $("#deck-title").textContent = `${difficulty[0].toUpperCase()}${difficulty.slice(1)} · ${times[difficulty]}`;
+      $("#deck-description").textContent = `V balíčku ${count} ${taskNoun(count)}. Vyber jednu kartu.`;
+      renderRibbon("#deck-ribbon");
+      setModalStep("deck");
+      const grid = $("#card-grid");
+      grid.classList.remove("dealing");
+      void grid.offsetWidth;
+      grid.classList.add("dealing");
+      setTimeout(() => grid.classList.remove("dealing"), 850);
+    }
+    function openDraw() {
+      if (!dueChores().length) { notify("Všechny aktuální úkoly už jsou rozdělené nebo splněné."); return; }
+      clearTimeout(drawFinishTimer);
+      sessionDrawn = [];
+      $("#draw-modal").hidden = false;
+      document.body.style.overflow = "hidden";
+      renderPacks();
+    }
+    function drawCard(difficulty) {
+      const options = dueChores().filter((chore) => chore.difficulty === difficulty);
+      if (!options.length) { notify("V této obtížnosti teď žádný úkol nečeká."); return; }
+      const chore = options[Math.floor(Math.random() * options.length)];
+      const roommate = chooseRoommate(chore);
+      chore.history.push(roommate.id);
+      state.assignments.push({ choreId: chore.id, roommateId: roommate.id, assignedAt: todayISO() });
+      sessionDrawn.push({ choreId: chore.id, name: chore.name, icon: chore.icon, roommateName: roommate.name });
+      save();
+      render();
+      $("#revealed-icon").textContent = chore.icon;
+      $("#revealed-title").textContent = chore.name;
+      $("#revealed-description").textContent = chore.description || "Splň úkol a přidej body celé družině.";
+      $("#revealed-detail").textContent = `${difficultyLabel(chore)} · ${chore.durationMin} min · ${chore.points} bodů · ${frequencyLabel(chore.days)}`;
+      $("#assignee-pill").textContent = `${roommate.avatar} ${roommate.name}`;
+      renderRibbon("#reveal-ribbon");
+      setModalStep("reveal");
+      const remaining = dueChores();
+      const hasSame = remaining.some((item) => item.difficulty === difficulty);
+      const hasOther = remaining.some((item) => item.difficulty !== difficulty);
+      $("#draw-again-button").hidden = !hasSame;
+      $("#draw-again-button").textContent = "Losovat znovu";
+      $("#choose-pack-button").hidden = !hasOther;
+      $("#choose-pack-button").textContent = hasSame ? "Jiný balíček" : "Další balíček";
+      $("#last-card-note").hidden = remaining.length > 0;
+      if (remaining.length === 0) {
+        clearTimeout(drawFinishTimer);
+        drawFinishTimer = setTimeout(finalizeDraw, 2400);
+      }
+      notify(`Karta odhalena! ${roommate.name} se ujímá úkolu.`);
+    }
+    function finalizeDraw() {
+      clearTimeout(drawFinishTimer);
+      const count = sessionDrawn.length;
+      $("#draw-modal").hidden = true;
+      document.body.style.overflow = "";
+      sessionDrawn = [];
+      render();
+      if (count) notify(`Rozděleno ${count} ${taskNoun(count)} do týdenního přehledu.`);
+    }
+    function completeCard(choreId) {
+      const assignmentIndex = state.assignments.findIndex((assignment) => assignment.choreId === choreId);
+      if (assignmentIndex < 0) return;
+      const [assignment] = state.assignments.splice(assignmentIndex, 1);
+      const chore = state.chores.find((item) => item.id === assignment.choreId);
+      const roommate = byId(assignment.roommateId);
+      if (!chore || !roommate) return;
+      chore.lastCompleted = todayISO();
+      roommate.points += chore.points;
+      state.cohesion += chore.points;
+      let bonus = "";
+      if (state.cohesion >= state.level * 100) {
+        state.level += 1;
+        roommate.bonuses += 1;
+        bonus = ` Milník splněn — ${roommate.name} získává bonus avatara ✨`;
+      }
+      save();
+      render();
+      notify(`Quest splněn! +${chore.points} bodů pro ${roommate.name}.${bonus}`);
+    }
+    function renderHeader() {
+      const progress = state.cohesion % 100;
+      $("#household-label").textContent = state.householdName || "";
+      $("#household-label").hidden = !state.householdName;
+      $("#progress-fill").style.width = `${progress}%`;
+      $("#cohesion-count").textContent = `${progress} / 100 bodů`;
+      $("#tiny-avatars").innerHTML = state.roommates.map((person) => `<span class="avatar-chip" title="${escapeHTML(person.name)}" style="background:${person.color}">${person.avatar}</span>`).join("");
+      $("#quick-cohesion").textContent = `Úroveň ${state.level} · ${progress} / 100 bodů`;
+      const pending = dueChores().length;
+      $("#quick-tasks").textContent = `Čeká ${pending} ${taskNoun(pending)}`;
+    }
+    function renderTasks() {
+      const { start } = selectedWeekDates();
+      $("#home-task-list").innerHTML = state.chores.map((chore) => {
+        const assigned = weekOffset === 0 && state.assignments.find((assignment) => assignment.choreId === chore.id);
+        const isAssigned = Boolean(assigned);
+        const completeToday = chore.lastCompleted === todayISO();
+        const dueDate = shiftDate(chore.lastCompleted, Number(chore.days));
+        const dueInWeek = dueThisWeek(chore);
+        const remaining = Math.max(0, dayGap(todayISO(), dueDate));
+        const hint = isAssigned ? `přiděleno: ${escapeHTML(byId(assigned.roommateId).name)}` : dueInWeek && weekOffset === 0 && isDue(chore) ? "čeká na los" : dueDate < start ? "po termínu" : remaining === 0 ? "dnes" : `zbývá: ${remaining} ${dayNoun(remaining)}`;
+        return `<div class="task-row"><div class="task-copy"><div class="task-line"><span class="task-name">${chore.icon} &nbsp;${escapeHTML(chore.name)}</span><span class="task-remaining">(${hint})</span></div></div><input class="task-check" type="checkbox" data-complete="${chore.id}" aria-label="Označit jako splněný: ${escapeHTML(chore.name)}" ${completeToday && weekOffset === 0 ? "checked" : ""} ${isAssigned ? "" : "disabled"}></div>`;
+      }).join("");
+      $("#supply-list").innerHTML = state.supplies.map((supply) => `<label class="supply-row"><span>${escapeHTML(supply.name)} <span class="supply-owner">(${escapeHTML(supply.owner)})</span></span><input class="task-check supply-check" type="checkbox" data-supply="${supply.id}" aria-label="Označit ${escapeHTML(supply.name)}"></label>`).join("");
+      state.supplies.forEach((supply) => {
+        const checkbox = document.querySelector(`[data-supply="${supply.id}"]`);
+        if (checkbox) checkbox.checked = Boolean(supply.bought);
+      });
+      $("#week-label").textContent = `Týden ${weekOffset + 1}`;
+      $("#week-prev").disabled = weekOffset === 0;
+      $("#week-prev").style.opacity = weekOffset === 0 ? ".45" : "1";
+      $("#manage-task-list").innerHTML = state.chores.map((chore) => `<div class="manage-row"><div class="manage-icon">${chore.icon}</div><div><div class="manage-name">${escapeHTML(chore.name)}</div><div class="manage-points">${chore.points} bodů · ${chore.difficulty}</div></div><select class="frequency" data-chore="${chore.id}" aria-label="Frekvence: ${escapeHTML(chore.name)}">${frequencies.map((frequency) => `<option value="${frequency.days}" ${Number(chore.days) === frequency.days ? "selected" : ""}>${frequency.label}</option>`).join("")}</select></div>`).join("");
+    }
+    function renderParty() {
+      $("#party-list").innerHTML = state.roommates.map((person) => `<article class="party-row"><div class="party-avatar" style="background:${person.color}">${person.avatar}</div><div><div class="party-name">${escapeHTML(person.name)}</div><div class="party-role">${escapeHTML(person.role)}</div></div><div class="party-xp">${person.points} XP<div class="party-bonus">${person.bonuses ? `✨ ${person.bonuses}× odměna` : "bez odměny"}</div></div></article>`).join("");
+      const timeBudget = `<div class="invite-summary"><strong>Tvůj čas na úklid</strong>${state.myWeeklyMinutes >= 120 ? "2+ hodiny týdně" : `${state.myWeeklyMinutes} minut týdně`}</div>`;
+      const invitations = state.invites.length
+        ? `<div class="invite-summary"><strong>Připravené pozvánky</strong>${state.invites.map((invite) => `<div class="invite-email">${escapeHTML(invite.email)}</div>`).join("")}</div>`
+        : "";
+      $("#invite-list").innerHTML = `${timeBudget}${invitations}`;
+    }
+    function render() {
+      renderHeader();
+      renderTasks();
+      renderParty();
+    }
+
+    $("#draw-open").addEventListener("click", openDraw);
+    $("#help-open").addEventListener("click", openOnboarding);
+    $("#onboarding-close").addEventListener("click", () => closeOnboarding());
+    $("#onboarding-skip").addEventListener("click", () => closeOnboarding());
+    document.querySelectorAll("[data-household-mode]").forEach((button) => {
+      button.addEventListener("click", () => updateSetupMode(button.dataset.householdMode));
+    });
+    $("#onboarding-prev").addEventListener("click", () => {
+      onboardingIndex = Math.max(0, onboardingIndex - 1);
+      renderOnboarding();
+    });
+    $("#onboarding-next").addEventListener("click", () => {
+      if (!validateSetupStep()) return;
+      if (onboardingIndex < setupSteps.length - 1) {
+        onboardingIndex += 1;
+        renderOnboarding();
+      } else {
+        setupTimeMinutes = Number(document.querySelector('input[name="weekly-time"]:checked').value);
+        finishOnboarding();
+      }
+    });
+    $("#setup-chore-list").addEventListener("change", (event) => {
+      const target = event.target;
+      const chore = setupChores.find((item) => item.id === target.dataset.choreId);
+      if (!chore) return;
+      if (target.matches(".setup-enabled")) chore.enabled = target.checked;
+      if (target.matches(".setup-duration")) chore.durationMin = Number(target.value);
+      if (target.matches(".setup-frequency")) chore.days = Number(target.value);
+    });
+    $("#add-setup-task").addEventListener("click", addSetupChore);
+    document.querySelectorAll('input[name="weekly-time"]').forEach((radio) => {
+      radio.addEventListener("change", () => { if (radio.checked) setupTimeMinutes = Number(radio.value); });
+    });
+    $("#onboarding-modal").addEventListener("click", (event) => {
+      if (event.target === $("#onboarding-modal")) closeOnboarding();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !$("#onboarding-modal").hidden) closeOnboarding();
+      else if (event.key === "Escape" && !$("#invite-modal").hidden) closeInviteModal();
+    });
+    $("#settle-up").addEventListener("click", () => openScreen("party"));
+    $("#party-invite-open").addEventListener("click", openInviteModal);
+    $("#invite-close").addEventListener("click", closeInviteModal);
+    $("#invite-done").addEventListener("click", closeInviteModal);
+    $("#prepare-invites").addEventListener("click", prepareInvites);
+    $("#invite-modal").addEventListener("click", (event) => {
+      if (event.target === $("#invite-modal")) closeInviteModal();
+    });
+    $("#manage-open").addEventListener("click", () => openScreen("manage"));
+    $("#week-prev").addEventListener("click", () => {
+      weekOffset = Math.max(0, weekOffset - 1);
+      renderTasks();
+    });
+    $("#week-prev").disabled = true;
+    $("#week-next").addEventListener("click", () => { weekOffset += 1; renderTasks(); });
+    document.querySelectorAll("[data-back]").forEach((button) => button.addEventListener("click", () => openScreen(button.dataset.back)));
+    document.querySelectorAll(".pack-card").forEach((button) => button.addEventListener("click", () => showDeck(button.dataset.pack)));
+    $("#deck-back").addEventListener("click", showPacks);
+    $("#card-grid").addEventListener("click", (event) => {
+      const card = event.target.closest("[data-card]");
+      if (card && selectedDifficulty) drawCard(selectedDifficulty);
+    });
+    $("#shuffle-again").addEventListener("click", () => {
+      if (!selectedDifficulty) { notify("Vyber nejdřív obtížnost."); return; }
+      const grid = $("#card-grid");
+      grid.classList.remove("shuffling");
+      void grid.offsetWidth;
+      grid.classList.add("shuffling");
+      setTimeout(() => grid.classList.remove("shuffling"), 700);
+      notify("Karty jsou zamíchané. Vyber jednu!");
+    });
+    $("#draw-again-button").addEventListener("click", () => showDeck(selectedDifficulty));
+    $("#choose-pack-button").addEventListener("click", showPacks);
+    $("#close-draw").addEventListener("click", finalizeDraw);
+    $("#draw-modal").addEventListener("click", (event) => {
+      if (event.target === $("#draw-modal")) finalizeDraw();
+    });
+    $("#home-task-list").addEventListener("change", (event) => {
+      const checkbox = event.target.closest("[data-complete]");
+      if (!checkbox) return;
+      if (state.assignments.some((assignment) => assignment.choreId === checkbox.dataset.complete)) completeCard(checkbox.dataset.complete);
+      else { checkbox.checked = false; notify("Nejdřív si úkol vylosuj."); }
+    });
+    $("#supply-list").addEventListener("change", (event) => {
+      const checkbox = event.target.closest("[data-supply]");
+      if (!checkbox) return;
+      const supply = state.supplies.find((item) => item.id === checkbox.dataset.supply);
+      if (supply) { supply.bought = checkbox.checked; save(); }
+    });
+    $("#manage-task-list").addEventListener("change", (event) => {
+      const select = event.target.closest("select[data-chore]");
+      if (!select) return;
+      const chore = state.chores.find((item) => item.id === select.dataset.chore);
+      if (!chore) return;
+      chore.days = Number(select.value);
+      state.deckOrder = [];
+      save();
+      render();
+      notify(`Nová frekvence: ${frequencyLabel(chore.days)}.`);
+    });
+    render();
+    if (shouldAutoOpenOnboarding()) openOnboarding();
+  </script>
+</body>
+</html>
