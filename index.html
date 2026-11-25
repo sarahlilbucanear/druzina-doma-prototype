@@ -2030,7 +2030,11 @@
       notify(`Nová frekvence: ${frequencyLabel(chore.days)}.`);
     });
     render();
-    if (shouldAutoOpenOnboarding()) openOnboarding();
+    const onboardingPreviewRequested = new URLSearchParams(window.location.search).get("onboarding") === "1";
+    if (onboardingPreviewRequested) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.hash}`);
+    }
+    if (onboardingPreviewRequested || shouldAutoOpenOnboarding()) openOnboarding();
   </script>
 </body>
 </html>
